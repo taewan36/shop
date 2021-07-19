@@ -1,6 +1,7 @@
 package com.vkrh0406.shop.service;
 
 
+import com.vkrh0406.shop.domain.Category;
 import com.vkrh0406.shop.dto.CategoryDto;
 import com.vkrh0406.shop.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -20,6 +22,15 @@ import static java.util.stream.Collectors.groupingBy;
 @Slf4j
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+
+
+
+    public Category findCategoryByName(String name){
+        Category category = categoryRepository.findCategoryByName(name).orElseThrow(() -> new IllegalStateException("이런 이름의 카테고리가 없습니다"));
+        return category;
+    }
+
+
 
     public CategoryDto createCategoryRoot(){
       //  log.info("createCategoryRoot 실행");
