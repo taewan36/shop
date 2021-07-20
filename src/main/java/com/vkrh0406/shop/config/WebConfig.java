@@ -1,6 +1,8 @@
 package com.vkrh0406.shop.config;
 
-import com.vkrh0406.shop.interceptor.LoginCheckInterceptor;
+
+import com.vkrh0406.shop.resolver.LoginMemberArgumentResolver;
+import com.vkrh0406.shop.resolver.SessionCartArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
+        resolvers.add(new LoginMemberArgumentResolver());
+        resolvers.add(new SessionCartArgumentResolver());
     }
 
     @Override

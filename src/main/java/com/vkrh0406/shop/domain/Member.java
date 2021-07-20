@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Member extends Order {
+public class Member {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -29,13 +29,11 @@ public class Member extends Order {
     private Cart cart;
 
 
-
-
-
-    public Member(String loginId, String password, String username) {
+    public Member(String loginId, String password, String username, Address address) {
         this.loginId = loginId;
         this.password = password;
         this.username = username;
+        this.address = address;
 
     }
 

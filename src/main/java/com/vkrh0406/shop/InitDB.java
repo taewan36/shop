@@ -86,30 +86,30 @@ public class InitDB {
 
 
 
-            Item item = new Item(5000, 2000, 55, 5,
+            Item item = new Item(5000, 2000, 55, 1,
                     new UploadFile("업로드.png", "book1.jpg"), categoryService.findCategoryByName("게임")
-                    , "로블록스 게임제작 무작정 따라하기");
-            Item item2 = new Item(5000, 2000, 55, 5,
+                    , "로블록스 게임제작 무작정 따라하기2");
+            Item item2 = new Item(5000, 2000, 55, 2,
                     new UploadFile("업로드.png", "book2.jpg"), categoryService.findCategoryByName("게임"),
-                    "DEVELOPING 2D GAMES WITH UNITY");
-            Item item3 = new Item(5000, 2000, 55, 5,
+                    "DEVELOPING 2D GAMES WITH UNITY2");
+            Item item3 = new Item(5000, 2000, 55, 0,
                     new UploadFile("업로드.png", "book3.jpg"), categoryService.findCategoryByName("게임"),
-                    "유니티 2D 게임 제작");
-            Item item4 = new Item(5000, 2000, 55, 5,
+                    "유니티 2D 게임 제작2");
+            Item item4 = new Item(5000, 2000, 55, 3,
                     new UploadFile("업로드.png", "book4.jpg"), categoryService.findCategoryByName("게임"),
-                    "로호의 배경 일러스트 메이킹");
-            Item item5 = new Item(5000, 2000, 55, 5,
+                    "로호의 배경 일러스트 메이킹2");
+            Item item5 = new Item(5000, 2000, 55, 4,
                     new UploadFile("업로드.png", "book5.jpg"), categoryService.findCategoryByName("게임"),
-                    "인생 유니티 VR/AR 교과서");
-            Item item6 = new Item(5000, 2000, 55, 5,
+                    "인생 유니티 VR/AR 교과서2");
+            Item item6 = new Item(5000, 2000, 55, 3,
                     new UploadFile("업로드.png", "book6.jpg"), categoryService.findCategoryByName("게임"),
-                    "언리얼 엔진 4");
+                    "언리얼 엔진 42");
             Item item7 = new Item(5000, 2000, 55, 5,
                     new UploadFile("업로드.png", "book7.jpg"), categoryService.findCategoryByName("게임"),
-                    "파이썬으로 배우는 게임 개발 실전편");
+                    "파이썬으로 배우는 게임 개발 실전편2");
             Item item8 = new Item(5000, 2000, 55, 5,
                     new UploadFile("업로드.png", "book8.jpg"), categoryService.findCategoryByName("게임"),
-                    "게임 프로그래머로 산다는 것");
+                    "게임 프로그래머로 산다는 것2");
 
             itemRepository.save(item);
             itemRepository.save(item2);
