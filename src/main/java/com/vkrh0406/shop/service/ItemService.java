@@ -1,6 +1,8 @@
 package com.vkrh0406.shop.service;
 
+import com.vkrh0406.shop.Controller.ItemSearch;
 import com.vkrh0406.shop.domain.Item;
+import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,11 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
 
+    public Page<ItemDto> searchAllItem(ItemSearch itemSearch,Pageable pageable){
+        Page<ItemDto> itemDtos = itemRepository.searchItem(itemSearch, pageable);
+        return itemDtos;
+    }
+
     public List<Item> getHomeItem(){
         PageRequest pageRequest = PageRequest.of(0, 8);
         Pageable pageable = (Pageable) pageRequest;
@@ -32,8 +39,6 @@ public class ItemService {
 
         return result;
     }
-
-
 
 
     public List<Item> findAll(){

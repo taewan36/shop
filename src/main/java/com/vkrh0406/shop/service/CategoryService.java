@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +24,26 @@ import static java.util.stream.Collectors.groupingBy;
 @Slf4j
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+
+    public static CategoryDto category;
+
+
+
+    public void updateCategory(){
+        this.category= createCategoryRoot();
+    }
+
+//    public Map<Long, String> makeCategoriesList(){
+//        CategoryDto category = CategoryService.category;
+//        List<String> categoryString = new ArrayList<>();
+//
+//        List<CategoryDto> subCategories = category.getSubCategories();
+//
+//
+//        return null;
+//
+//
+//    }
 
 
 

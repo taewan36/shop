@@ -18,7 +18,7 @@ public class FileStore {
 
     private String fileDir = "D:/spring/files/";
 
-    private String getFullPath(String fileName) {
+    public String getFullPath(String fileName) {
         return fileDir + fileName;
     }
 

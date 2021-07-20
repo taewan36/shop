@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+
+    <title>Book Shop Homepage</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet"/>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="/">Book Store</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">About</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="/" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/item/all">All Products</a></li>
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li th:each="subCategory1 : ${category.subCategories}">
+                            <a class="dropdown-item" th:href="@{/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
+                            <div th:each="subCategory2 : ${subCategory1.subCategories}" th:if="${subCategory1.subCategories!=null}">
+                                <a class="dropdown-item" th:href="@{/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
+                            </div>
+                            <hr class="dropdown-divider"/>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" action="/cart/list">
+                <button class="btn btn-outline-dark" type="submit">
+                    <i class="bi-cart-fill me-1"></i>
+                    Cart
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" th:text="${cartSize}">0</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Book Store</h1>
+            <p class="lead fw-normal text-white-50 mb-0">책 사주세요</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container-lg">
+        <div th:replace="fragments/bodyHeader :: bodyHeader(${username!=null}? ${username} : '')"/>
+        <form role="form"  th:object="${memberForm}"
+              method="post">
+            <div class="form-group">
+                <label th:for="name">로그인 아이디</label>
+                <input type="text" th:field="*{loginId}" class="form-control"
+                       placeholder="로그인 아이디를 입력하세요"
+                       th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('name')}"
+                   th:errors="*{loginId}">Incorrect date</p>
+            </div>
+            <div class="form-group">
+                <label th:for="name">비밀번호</label>
+                <input type="password" th:field="*{password}" class="form-control"
+                       placeholder="비밀번호를 입력하세요"
+                       th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('name')}"
+                   th:errors="*{password}">Incorrect date</p>
+            </div>
+
+            <div class="form-group">
+                <label th:for="name">이름</label>
+                <input type="text" th:field="*{name}" class="form-control"
+                       placeholder="이름을 입력하세요"
+                       th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+                <p th:if="${#fields.hasErrors('name')}"
+                   th:errors="*{name}">Incorrect date</p>
+            </div>
+            <div class="form-group">
+                <label th:for="city">도시</label>
+                <input type="text" th:field="*{city}" class="form-control"
+                       placeholder="도시를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label th:for="street">거리</label>
+                <input type="text" th:field="*{street}" class="form-control"
+                       placeholder="거리를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label th:for="zipcode">우편번호</label>
+                <input type="text" th:field="*{zipcode}" class="form-control"
+                       placeholder="우편번호를 입력하세요">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+    </div>
+
+
+</section>
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="../static/js/scripts.js"></script>
+</body>
+</html>

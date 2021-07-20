@@ -30,7 +30,6 @@ public class Item extends BaseEntity{
     private int ratingStar;
 
 
-
     @Embedded
     private UploadFile uploadFile;
 

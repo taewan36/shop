@@ -1,5 +1,6 @@
 package com.vkrh0406.shop.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class ItemDto {
 
     private String imageSource;
 
+    @QueryProjection
     public ItemDto(Long id, String name, int price, int discountPrice, int ratingStar, String imageSource) {
         this.id = id;
         this.name = name;

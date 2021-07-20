@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Member extends BaseEntity{
+public class Member extends Order {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -21,10 +21,16 @@ public class Member extends BaseEntity{
 
     private String username;
 
+    @Embedded
+    private Address address;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<Order> orderList=new ArrayList<>();
+
+
 
     public Member(String loginId, String password, String username) {
         this.loginId = loginId;
@@ -34,5 +40,9 @@ public class Member extends BaseEntity{
     }
 
     protected Member() {
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

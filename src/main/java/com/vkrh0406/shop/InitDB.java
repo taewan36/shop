@@ -24,6 +24,7 @@ public class InitDB {
     public void initCategories() {
         initService.initCategory();
         initService.initItemDB();
+        initService.initItemDB2();
     }
 
 
@@ -45,28 +46,69 @@ public class InitDB {
             }
 
             Item item = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book1.jpg"), categoryService.findCategoryByName("게임")
+                    new UploadFile("업로드.png", "book1.jpg"), categoryService.findCategoryByName("게임")
                     , "로블록스 게임제작 무작정 따라하기");
             Item item2 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book2.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book2.jpg"), categoryService.findCategoryByName("게임"),
                     "DEVELOPING 2D GAMES WITH UNITY");
             Item item3 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book3.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book3.jpg"), categoryService.findCategoryByName("게임"),
                     "유니티 2D 게임 제작");
             Item item4 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book4.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book4.jpg"), categoryService.findCategoryByName("게임"),
                     "로호의 배경 일러스트 메이킹");
             Item item5 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book5.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book5.jpg"), categoryService.findCategoryByName("게임"),
                     "인생 유니티 VR/AR 교과서");
             Item item6 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book6.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book6.jpg"), categoryService.findCategoryByName("게임"),
                     "언리얼 엔진 4");
             Item item7 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book7.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book7.jpg"), categoryService.findCategoryByName("게임"),
                     "파이썬으로 배우는 게임 개발 실전편");
             Item item8 = new Item(5000, 2000, 55, 5,
-                    new UploadFile("업로드.png", "images/book8.jpg"), categoryService.findCategoryByName("게임"),
+                    new UploadFile("업로드.png", "book8.jpg"), categoryService.findCategoryByName("게임"),
+                    "게임 프로그래머로 산다는 것");
+
+            itemRepository.save(item);
+            itemRepository.save(item2);
+            itemRepository.save(item3);
+            itemRepository.save(item4);
+            itemRepository.save(item5);
+            itemRepository.save(item6);
+            itemRepository.save(item7);
+            itemRepository.save(item8);
+
+
+        }
+
+        public void initItemDB2() {
+
+
+
+            Item item = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book1.jpg"), categoryService.findCategoryByName("게임")
+                    , "로블록스 게임제작 무작정 따라하기");
+            Item item2 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book2.jpg"), categoryService.findCategoryByName("게임"),
+                    "DEVELOPING 2D GAMES WITH UNITY");
+            Item item3 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book3.jpg"), categoryService.findCategoryByName("게임"),
+                    "유니티 2D 게임 제작");
+            Item item4 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book4.jpg"), categoryService.findCategoryByName("게임"),
+                    "로호의 배경 일러스트 메이킹");
+            Item item5 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book5.jpg"), categoryService.findCategoryByName("게임"),
+                    "인생 유니티 VR/AR 교과서");
+            Item item6 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book6.jpg"), categoryService.findCategoryByName("게임"),
+                    "언리얼 엔진 4");
+            Item item7 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book7.jpg"), categoryService.findCategoryByName("게임"),
+                    "파이썬으로 배우는 게임 개발 실전편");
+            Item item8 = new Item(5000, 2000, 55, 5,
+                    new UploadFile("업로드.png", "book8.jpg"), categoryService.findCategoryByName("게임"),
                     "게임 프로그래머로 산다는 것");
 
             itemRepository.save(item);
@@ -111,6 +153,9 @@ public class InitDB {
 
             Category category6 = new Category("처세술/삶의 자세", 6L, 3L);
             categoryRepository.save(category6);
+
+            categoryService.updateCategory();
+
 
 
         }

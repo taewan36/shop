@@ -40,13 +40,52 @@
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center"><a class="btn btn-outline-dark mt-auto"
-                                                    th:href="@{/cart/add/{itemId} (itemId=${itemDto.id})}">Add to
+                                                    th:href="@{/cart/add/{itemId} (itemId=${itemDto.id},requestURI=${#httpServletRequest.requestURI})}">Add to
                             cart</a></div>
                     </div>
                 </div>
 
             </div>
         </div>
+        <div>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination"
+                    th:with="start=${T(Math).floor(homeItemDto.number/10)*10},
+                last=(${start + 9 < homeItemDto.totalPages ? start + 9 : homeItemDto.totalPages})">
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{/item/all(page=0)}" aria-label="First">
+                            <span aria-hidden="true">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:class="${homeItemDto.first} ? 'disabled'">
+                        <a class="page-link" th:href="${homeItemDto.first} ? '#' : @{/item/all(page=${homeItemDto.number-1})}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"
+                        th:each="page: ${last>=homeItemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
+                        th:class="${page== homeItemDto.number} ? 'page-item active'">
+                        <a class="page-link" th:href="@{/item/all(page=${page})}" th:text="${page+1}">
+                        </a>
+                    </li>
+                    <li class="page-item" th:class="${homeItemDto.last} ? 'disabled'">
+                        <a class="page-link" th:href="${homeItemDto.last} ? '#' : @{/item/all(page=${homeItemDto.number+1})}"
+                           aria-label="Next">
+                            <span aria-hidden="true">Next</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{/board(page=${homeItemDto.totalPages-1})}" aria-label="Last">
+                            <span aria-hidden="true">Last</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+
 
     </div>
 </section>
