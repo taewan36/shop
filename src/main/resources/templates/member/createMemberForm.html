@@ -3,7 +3,7 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <!-- Navigation-->
-<nav  th:replace="fragments/nav :: nav(${category!=null} ? ${category} : '')"/>
+<nav  th:replace="fragments/nav :: nav(${category!=null} ? ${category} : '',${username!=null} ? ${username} : null)"/>
 <!-- Header-->
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">

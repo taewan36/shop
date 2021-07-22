@@ -2,8 +2,11 @@ package com.vkrh0406.shop.Controller;
 
 
 import com.vkrh0406.shop.domain.Cart;
+import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.interceptor.SessionConst;
+import com.vkrh0406.shop.resolver.Login;
+import com.vkrh0406.shop.resolver.SessionCart;
 import com.vkrh0406.shop.service.CategoryService;
 import com.vkrh0406.shop.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +31,12 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("all")
-    public String itemAll(Model model, @SessionAttribute(name = SessionConst.SESSION_CART, required = false) Cart cart, HttpServletRequest request,
+    public String itemAll(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request,
                           @PageableDefault(size = 8) Pageable pageable, ItemSearch itemSearch){
 
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
+        }
 
         Page<ItemDto> itemDtos = itemService.searchAllItem(itemSearch, pageable);
 

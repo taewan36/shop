@@ -3,8 +3,11 @@ package com.vkrh0406.shop.Controller;
 import com.vkrh0406.shop.FileStore;
 import com.vkrh0406.shop.domain.Cart;
 import com.vkrh0406.shop.domain.Item;
+import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.interceptor.SessionConst;
+import com.vkrh0406.shop.resolver.Login;
+import com.vkrh0406.shop.resolver.SessionCart;
 import com.vkrh0406.shop.service.CategoryService;
 import com.vkrh0406.shop.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +34,10 @@ public class HomeController {
 
 
     @GetMapping("")
-    public String shopHome(Model model, @SessionAttribute(name = SessionConst.SESSION_CART, required = false) Cart cart, HttpServletRequest request) {
+    public String shopHome(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request) {
 
-        if (cart != null) {
-            log.info("세션카트 아디={}, 사이즈={}", cart.getId(), cart.getSize());
-
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
         }
 
 

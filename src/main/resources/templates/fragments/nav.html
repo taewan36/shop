@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="nav(category)">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="nav(category,username)">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="/">Book Store</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -28,10 +28,10 @@
 
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/order/list">주문목록</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/new">회원가입</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/login">로그인</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/logout">로그아웃</a></li>
+                <li class="nav-item" th:if="${username!=null}"><a class="nav-link" href="/order/list">주문목록</a></li>
+                <li class="nav-item" th:if="${username==null}"><a class="nav-link" href="/member/new">회원가입</a></li>
+                <li class="nav-item" th:if="${username==null}"><a class="nav-link" href="/member/login">로그인</a></li>
+                <li class="nav-item" th:if="${username!=null}"><a class="nav-link" href="/member/logout">로그아웃</a></li>
 
             </ul>
             <form class="d-flex" action="/cart/list">

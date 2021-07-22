@@ -2,9 +2,11 @@ package com.vkrh0406.shop;
 
 import com.vkrh0406.shop.domain.Category;
 import com.vkrh0406.shop.domain.Item;
+import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.domain.UploadFile;
 import com.vkrh0406.shop.repository.CategoryRepository;
 import com.vkrh0406.shop.repository.ItemRepository;
+import com.vkrh0406.shop.repository.MemberRepository;
 import com.vkrh0406.shop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,8 @@ public class InitDB {
         initService.initCategory();
         initService.initItemDB();
         initService.initItemDB2();
+        initService.initMemberDb();
+
     }
 
 
@@ -36,6 +40,15 @@ public class InitDB {
         private final CategoryRepository categoryRepository;
         private final CategoryService categoryService;
         private final ItemRepository itemRepository;
+        private final MemberRepository memberRepository;
+
+        public void initMemberDb(){
+            List<Member> all = memberRepository.findAll();
+            if (all.size() != 0) {
+                return;
+            }
+            memberRepository.save(new Member("test", "test!", "test", null));
+        }
 
 
         public void initItemDB() {

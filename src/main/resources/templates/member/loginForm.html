@@ -3,7 +3,7 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <!-- Navigation-->
-<nav th:replace="fragments/nav :: nav(${category!=null} ? ${category} : '')"/>
+<nav th:replace="fragments/nav :: nav(${category!=null} ? ${category} : '',${username!=null} ? ${username} : null)"/>
 <!-- Header-->
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
@@ -21,7 +21,7 @@
             <h2>로그인</h2>
         </div>
         <form action="item.html" th:action th:object="${loginForm}" method="post">
-            <div th:if="${#fields.hasGlobalErrors()}">
+            <div class="row justify-content-center" th:if="${#fields.hasGlobalErrors()}">
                 <p class="field-error" th:each="err : ${#fields.globalErrors()}"
                    th:text="${err}">전체 오류 메시지</p>
             </div>

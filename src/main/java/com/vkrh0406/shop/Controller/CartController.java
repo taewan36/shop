@@ -3,8 +3,11 @@ package com.vkrh0406.shop.Controller;
 
 
 import com.vkrh0406.shop.domain.Cart;
+import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.interceptor.SessionConst;
+import com.vkrh0406.shop.resolver.Login;
 import com.vkrh0406.shop.service.CartService;
+import com.vkrh0406.shop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -19,17 +22,28 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final MemberService memberService;
 
 
     @GetMapping("add/{itemId}")
-    public String addCart(@PathVariable Long itemId, HttpServletRequest request, @RequestParam(required = false) String requestURI) {
-        HttpSession session = request.getSession(false);
+    public String addCart(@PathVariable Long itemId, HttpServletRequest request, @RequestParam(required = false) String requestURI,
+                          @Login Member member
+                          ) {
+        HttpSession session = request.getSession();
 
+        //로그인 상태인경우
+        if (member != null) {
+            Member findMember = memberService.findById(member.getId());
+            Cart cart = cartService.saveOrderItemToCart(findMember, itemId);
+            session.setAttribute(SessionConst.SESSION_CART,cart);
 
-
-        if (session == null) {
-            session = request.getSession();
+            if (requestURI != null) {
+                return "redirect:" + requestURI;
+            }
+            return "redirect:/";
         }
+
+
 
         Cart cart = (Cart) session.getAttribute(SessionConst.SESSION_CART);
 
@@ -37,12 +51,10 @@ public class CartController {
 
         if (cart == null) {
             cart = new Cart();
-            Long cartId = cartService.saveCart(cart);
-            log.info("새로만든 카트 {}", cartId);
 
         }
 
-        Cart sessionCart = cartService.saveOrderItemToCart(cart.getId(), itemId);
+        Cart sessionCart = cartService.saveOrderItemToCart(cart, itemId);
 
         session.setAttribute(SessionConst.SESSION_CART, sessionCart);
 

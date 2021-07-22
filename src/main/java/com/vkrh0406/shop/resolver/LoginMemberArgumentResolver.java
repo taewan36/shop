@@ -26,6 +26,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+
         HttpSession session = request.getSession(false);
 
         if (session == null) {
@@ -33,6 +34,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         Object member = session.getAttribute(SessionConst.SESSION_LOGIN_MEMBER);
+
 
         return member;
     }
