@@ -117,9 +117,14 @@ public class MemberController {
         if (member == null) {
             return "redirect:/";
         }
+        Cart cart1 = new Cart();
+        cart1.setOrderItems(cart.getOrderItems());
+        cart1.setSize(cart.getSize());
 
         //세션 지우기
         session.removeAttribute(SessionConst.SESSION_LOGIN_MEMBER);
+        //카트는 영속성 컨텍스트 해제한 카트를 새로 넣어줌
+//        session.setAttribute(SessionConst.SESSION_CART,cart1);
         session.removeAttribute(SessionConst.SESSION_CART);
 
 

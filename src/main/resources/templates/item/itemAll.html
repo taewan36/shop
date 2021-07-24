@@ -75,7 +75,9 @@
                             </div>
 
                             <!-- Product price-->
-                            <span th:class="${itemDto.discountPrice!=0} ?   'text-muted text-decoration-line-through' : ''">$20.00</span>
+                            <span th:class="${itemDto.discountPrice!=0} ?   'text-muted text-decoration-line-through' : ''"
+                                  th:text="${itemDto.price}"></span>
+                            <span th:if="${itemDto.discountPrice!=0}" th:text="${itemDto.discountPrice}">$20.00</span>
                         </div>
                     </div>
                     <!-- Product actions-->
@@ -137,6 +139,6 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="../static/js/scripts.js"></script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

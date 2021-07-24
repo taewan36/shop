@@ -78,4 +78,8 @@ public class Item extends BaseEntity{
 
         this.quantity = restStock;
     }
+
+   public int getRealPrice(){
+       return (discountPrice != 0) ? discountPrice : price;
+   }
 }

@@ -58,19 +58,19 @@ public class InitDB {
                 return;
             }
 
-            Item item = new Item(5000, 2000, 55, 5,
+            Item item = new Item(5000, 0, 55, 5,
                     new UploadFile("업로드.png", "book1.jpg"), categoryService.findCategoryByName("게임")
                     , "로블록스 게임제작 무작정 따라하기");
-            Item item2 = new Item(5000, 2000, 55, 5,
+            Item item2 = new Item(5000, 0, 55, 5,
                     new UploadFile("업로드.png", "book2.jpg"), categoryService.findCategoryByName("게임"),
                     "DEVELOPING 2D GAMES WITH UNITY");
-            Item item3 = new Item(5000, 2000, 55, 5,
+            Item item3 = new Item(5000, 0, 55, 5,
                     new UploadFile("업로드.png", "book3.jpg"), categoryService.findCategoryByName("게임"),
                     "유니티 2D 게임 제작");
-            Item item4 = new Item(5000, 2000, 55, 5,
+            Item item4 = new Item(5000, 0, 55, 5,
                     new UploadFile("업로드.png", "book4.jpg"), categoryService.findCategoryByName("게임"),
                     "로호의 배경 일러스트 메이킹");
-            Item item5 = new Item(5000, 2000, 55, 5,
+            Item item5 = new Item(5000, 0, 55, 5,
                     new UploadFile("업로드.png", "book5.jpg"), categoryService.findCategoryByName("게임"),
                     "인생 유니티 VR/AR 교과서");
             Item item6 = new Item(5000, 2000, 55, 5,

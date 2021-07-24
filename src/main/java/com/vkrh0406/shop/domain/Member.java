@@ -24,8 +24,7 @@ public class Member {
     @Embedded
     private Address address;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "member")
     private Cart cart;
 
 

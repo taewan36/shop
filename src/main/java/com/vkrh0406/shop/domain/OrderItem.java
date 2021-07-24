@@ -62,7 +62,7 @@ public class OrderItem {
 
     //주문한 아이템의 총 가격
     public int getOrderPrice() {
-        this.orderPrice = item.getPrice() * count;
+        this.orderPrice = item.getRealPrice() * count;
         return this.orderPrice;
     }
 

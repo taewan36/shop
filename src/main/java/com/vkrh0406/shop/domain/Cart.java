@@ -20,10 +20,11 @@ public class Cart {
 
     private int size;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cart")
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public void addOrderItem(OrderItem orderItem) {

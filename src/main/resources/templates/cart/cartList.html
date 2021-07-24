@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<!-- Navigation-->
+<nav th:replace="fragments/nav :: nav(${category!=null} ? ${category} : '',${username!=null} ? ${username} : null)"/>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <link rel="stylesheet" href="/css/shoppingcart-web-new.ko_KR.css" type="text/css">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Book Store</h1>
+            <p class="lead fw-normal text-white-50 mb-0">책 사주세요</p>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+</header>
+<!-- Section-->
+<section class="py-5">
+
+    <br>
+
+    <section id="contents-cart" class="contents-cart async-content" style="visibility: visible;">
+
+
+        <div id="cartContent">
+
+
+            <table class="cartTable" summary="장바구니 상품명, 제품가격, 선택한수량, 총결제비용 정보 및 결제 상품으로 선택,해제 및 수량변경, 삭제 기능 제공표">
+                <caption class="none">장바구니</caption>
+                <colgroup>
+                    <col width="50">
+                    <col width="80">
+                    <col width="*">
+                    <col width="90">
+                    <col width="90">
+                </colgroup>
+                <thead>
+                <tr class="head">
+                    <th scope="col" class="all-select-event"><label>
+                        <input id="allCheck" title="모든 상품을 결제상품으로 설정" type="checkbox" checked="checked"
+                               class="all-deal-select"><span>&nbsp;&nbsp;전체선택</span></label>
+                    </th>
+                    <th scope="colgroup" id="th-product-box" colspan="2">상품정보</th>
+                    <th scope="col" id="th-unit-total-price">상품금액</th>
+                    <th scope="col" id="th-delivery-fee">배송비</th>
+                </tr>
+                </thead>
+
+                <tbody id="cartTable-sku">
+
+                <tr class="cart-deal-item " th:each="orderItem : ${cartDto?.orderItems}">
+
+
+                    <td class="product-select-event">
+                        <input type="checkbox" checked="checked" class="dealSelectChk">
+                        <input id="orderItemId" type="hidden" th:value="${orderItem.itemId}"/>
+                    </td>
+                    <td class="cart-deal-item__image">
+                        <a th:href="@{/item/{itemId} (itemId=${orderItem.itemId})}"
+                           class="moveProduct">
+                            <img th:src="@{/images/{imageSource} (imageSource=${orderItem.itemImageSource})}" width="78"
+                                 height="78"
+                                 class="product-img img"  data-bundle-id="15916715647">
+                        </a>
+
+                    </td>
+                    <td class="product-box">
+                        <div class="product-name-part">
+                            <a th:href="@{/item/{itemId} (itemId=${orderItem.itemId})}" th:text="${orderItem.itemName}"
+                               class="product-name moveProduct modify-color">아이템 이름</a>
+                        </div>
+
+                        <div class="option-price-part" th:data-sale-price="${orderItem.price}">
+
+
+                            <span class="unit-cost" data-sale-price="19900" th:text="${orderItem.price}"><span
+                                    class="sr-only">제품가격</span></span>
+                            <span class="select-select">
+
+                                    <select class="quantity-select" th:value="${orderItem.count}"
+                                            data-quantity="1"
+                                            data-all="true" title="수량 변경">
+
+                                        <option th:each="number : ${#numbers.sequence(1,10)}"
+                                                th:selected="${number==orderItem.count}"
+                                                th:text="${number}"
+                                        ></option>
+                                    </select>
+                            </span>
+
+
+                        </div>
+                    </td>
+
+                    <td class="unit-total-price">
+
+
+                        <div class="unit-total-sale-price" th:text="${orderItem.price}*${orderItem.count}">0원</div>
+
+
+                    </td>
+
+                    <td class="delivery-fee" rowspan="1" headers="th-delivery-fee">
+
+                        <span class="delivery-fee__free">무료</span>
+
+                    </td>
+
+
+                </tr>
+
+
+                </tr>
+                <tr class="bundle-price-total">
+                    <td colspan="5">
+                        주문금액 <span class="total-order-price number">0</span>원
+                       </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <div class="order-buttons">
+                <button id="orderButton" type="submit" class="btn btn-primary">구매하기</button>
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+</section>
+<!-- Footer-->
+<!-- Footer-->
+<footer th:replace="fragments/footer :: footer"/>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="/js/scripts.js"></script>
+</body>
+<script type="text/javascript">
+    $(function() {
+        $("#allCheck").on("click",function(){
+            if (this.checked) {
+                $(".dealSelectChk").prop("checked",true);
+
+            } else {
+                $(".dealSelectChk").prop("checked",false);
+
+            }
+        });
+    });
+
+    $(function() {
+        $(".quantity-select").on("change",function(){
+
+            let price = parseInt($(this).parent().siblings(".unit-cost").text());
+            let find = $(this).parents(".cart-deal-item").find(".unit-total-sale-price");
+            let id = $(this).parents(".cart-deal-item").find("#orderItemId").val();
+            let count = $(this).find("option:selected").val();
+            let unitTotalPrice = count * price;
+            console.log(unitTotalPrice);
+
+            console.log($(find).text());
+            $(find).text(unitTotalPrice);
+            updatePrice();
+
+            // 세션 업데이트 해야하므로 해당 오더아이템id 와 변경된 숫자를 같이 post로 보내줍니다..
+            $.post("/cart/update",
+                {orderItemId: id , count: count},
+                function (data,status){
+                    $("#text").html(data + "<br>" + status);
+                }
+            )
+
+
+        });
+    });
+
+
+
+    function updatePrice(jQuery) {
+        let skill = $(".unit-total-sale-price");
+        let totalPrice = 0;
+        skill.each(function (i) {
+            totalPrice += parseInt($(this).text());
+        });
+
+        $(".total-order-price").text(totalPrice.toString());
+    }
+
+    $(document).ready(updatePrice);
+
+
+
+
+</script>
+</html>

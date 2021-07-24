@@ -3,6 +3,7 @@ server:
   address: localhost
   port: 8080
 spring:
+
   profiles:
     active: local
   datasource:
@@ -15,8 +16,10 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        default_batch_fetch_size: 100
         # show_sql: true
         format_sql: true
+        batch_fetch_style: dynamic
   servlet:
     multipart:
       max-file-size: 10MB
