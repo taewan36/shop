@@ -71,7 +71,6 @@ public class CartController {
 
         if (cart == null) {
             cart = new Cart();
-
         }
 
         Cart sessionCart = cartService.saveOrderItemToCart(cart, itemId);
@@ -91,6 +90,7 @@ public class CartController {
     public String cartList(@SessionCart Cart cart, @Login Member member, Model model) {
         if (member != null) {
             model.addAttribute("username", member.getUsername());
+
         }
 
         //카트Dto 만들기

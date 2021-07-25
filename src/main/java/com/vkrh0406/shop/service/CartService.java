@@ -44,12 +44,15 @@ public class CartService {
         if (cart == null) {
             return null;
         }
-                        //Lazy 로딩이므로 데이터를 여기서 불러옴
-                cart.getOrderItems()
-                        .stream()
-                        .forEach(o ->{
-                            o.getItem().getUploadFile().getStoreFileName();
-                        });
+        //카트가 db에 있는 카트면
+        if (cart.getId() != null) {
+            //Lazy 로딩이므로 데이터를 여기서 불러옴
+            cart.getOrderItems()
+                    .stream()
+                    .forEach(o -> {
+                        o.getItem().getUploadFile().getStoreFileName();
+                    });
+        }
 
        // log.info("카트 프록시 {}", cart.getOrderItems().get(0).getItem().getName());
         List<OrderItemDto> orderItemDtoList = cart.getOrderItems()
@@ -147,7 +150,6 @@ public class CartService {
                         o.setCount(count);
                     }
                 });
-
     }
 
 

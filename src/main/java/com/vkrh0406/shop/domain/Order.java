@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.lang.annotation.Target;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,8 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.REMOVE)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -46,7 +47,7 @@ public class Order extends BaseEntity{
 
 
     //생성 메서드
-    public static Order CreateOrder(Member member, Delivery delivery, OrderItem... orderItems){
+    public static Order CreateOrder(Member member, Delivery delivery, List<OrderItem> orderItems){
         Order order = new Order();
         order.setMember(member);
         order.setDelivery(delivery);
@@ -54,10 +55,13 @@ public class Order extends BaseEntity{
         int totalPrice=0;
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
+            //아직 save 되기전 order를 담아도 되는가??? 잘 모르겠음
+
+            orderItem.setOrder(order);
             totalPrice += orderItem.getOrderPrice();
         }
 
-        order.setOrderStatus(OrderStatus.ORDER);
+        order.setOrderStatus(OrderStatus.PRE_ORDER);
         order.setOrderDate(LocalDateTime.now());
         order.setTotalPrice(totalPrice);
 

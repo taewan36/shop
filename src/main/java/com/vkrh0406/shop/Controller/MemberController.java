@@ -86,6 +86,10 @@ public class MemberController {
     @PostMapping("login")
     public String login(Model model, @SessionCart Cart cart, @Login Member member, @ModelAttribute @Valid LoginForm loginForm,
                         BindingResult bindingResult, HttpServletRequest request,@RequestParam(required = false) String redirectURI){
+        //헤더 카테고리
+        model.addAttribute("category", CategoryService.category);
+        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
+
         if (bindingResult.hasErrors()) {
             return "member/loginForm";
         }
@@ -94,9 +98,6 @@ public class MemberController {
             return "redirect:/";
         }
 
-        //헤더 카테고리
-        model.addAttribute("category", CategoryService.category);
-        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
 
         HttpSession session = request.getSession();
 

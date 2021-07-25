@@ -41,7 +41,7 @@ public class OrderItem {
     }
 
     public void addCount(int count){
-        item.removeQuantity(count);
+  //      item.removeQuantity(count);
         this.count+=count;
         getOrderPrice();
     }
@@ -52,7 +52,7 @@ public class OrderItem {
             throw new IllegalStateException("제거하려는 카운트가 더 큽니다");
         }
         this.count = restCount;
-        item.addStock(count);
+       // item.addStock(count);
 
     }
 

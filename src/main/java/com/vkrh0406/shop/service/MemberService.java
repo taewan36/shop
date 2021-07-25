@@ -120,16 +120,21 @@ public class MemberService {
                     }
                 }
 
-//                //Lazy 로딩이므로 데이터를 여기서 불러옴
-//                findCart.getOrderItems()
-//                        .stream()
-//                        .forEach(o ->{
-//                            o.getItem().getUploadFile();
-//                        });
+                //Lazy 로딩이므로 데이터를 여기서 불러옴
+                findCart.getOrderItems()
+                        .stream()
+                        .forEach(o ->{
+                            o.getItem().getUploadFile();
+                        });
 
                 httpSession.setAttribute(SessionConst.SESSION_CART, findCart);
 
             }
+        }
+        //비번 틀려서 로그인 실패
+        else{
+            throw new IllegalStateException("아이디 또는 패스워드가 다릅니다.");
+
         }
 
 
