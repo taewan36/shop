@@ -22,13 +22,13 @@
                 th:with="start=${T(Math).floor(homeItemDto.number/10)*10},
                 last=(${start + 9 < homeItemDto.totalPages ? start + 9 : homeItemDto.totalPages})">
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/all(page=0)}" aria-label="First">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}" aria-label="First">
                         <span aria-hidden="true">First</span>
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.first} ? 'disabled'">
                     <a class="page-link"
-                       th:href="${homeItemDto.first} ? '#' : @{/item/all(page=${homeItemDto.number-1})}"
+                       th:href="${homeItemDto.first} ? '#' : @{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.number-1})}"
                        aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                     </a>
@@ -36,18 +36,18 @@
                 <li class="page-item"
                     th:each="page: ${last>=homeItemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
                     th:class="${page== homeItemDto.number} ? 'page-item active'">
-                    <a class="page-link" th:href="@{/item/all(page=${page})}" th:text="${page+1}">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}" th:text="${page+1}">
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.last} ? 'disabled'">
                     <a class="page-link"
-                       th:href="${homeItemDto.last} ? '#' : @{/item/all(page=${homeItemDto.number+1})}"
+                       th:href="${homeItemDto.last} ? '#' :@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.number+1})}"
                        aria-label="Next">
                         <span aria-hidden="true">Next</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/all(page=${homeItemDto.totalPages-1})}" aria-label="Last">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}" aria-label="Last">
                         <span aria-hidden="true">Last</span>
                     </a>
                 </li>
@@ -99,13 +99,13 @@
                 th:with="start=${T(Math).floor(homeItemDto.number/10)*10},
                 last=(${start + 9 < homeItemDto.totalPages ? start + 9 : homeItemDto.totalPages})">
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/all(page=0)}" aria-label="First">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}" aria-label="First">
                         <span aria-hidden="true">First</span>
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.first} ? 'disabled'">
                     <a class="page-link"
-                       th:href="${homeItemDto.first} ? '#' : @{/item/all(page=${homeItemDto.number-1})}"
+                       th:href="${homeItemDto.first} ? '#' : @{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.number-1})}"
                        aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                     </a>
@@ -113,18 +113,18 @@
                 <li class="page-item"
                     th:each="page: ${last>=homeItemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
                     th:class="${page== homeItemDto.number} ? 'page-item active'">
-                    <a class="page-link" th:href="@{/item/all(page=${page})}" th:text="${page+1}">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}" th:text="${page+1}">
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.last} ? 'disabled'">
                     <a class="page-link"
-                       th:href="${homeItemDto.last} ? '#' : @{/item/all(page=${homeItemDto.number+1})}"
+                       th:href="${homeItemDto.last} ? '#' :@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.number+1})}"
                        aria-label="Next">
                         <span aria-hidden="true">Next</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/board(page=${homeItemDto.totalPages-1})}" aria-label="Last">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}" aria-label="Last">
                         <span aria-hidden="true">Last</span>
                     </a>
                 </li>

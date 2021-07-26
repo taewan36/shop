@@ -2,8 +2,11 @@ package com.vkrh0406.shop.Controller;
 
 import com.vkrh0406.shop.domain.Cart;
 import com.vkrh0406.shop.domain.Member;
+import com.vkrh0406.shop.domain.Order;
+import com.vkrh0406.shop.domain.OrderStatus;
 import com.vkrh0406.shop.dto.OrderDto;
 import com.vkrh0406.shop.form.OrderForm;
+import com.vkrh0406.shop.form.PayForm;
 import com.vkrh0406.shop.resolver.Login;
 import com.vkrh0406.shop.resolver.SessionCart;
 import com.vkrh0406.shop.search.OrderSearch;
@@ -28,21 +31,73 @@ public class OrderController {
     private final OrderService orderService;
 
 
+    //생성한 오더 결제 전 페이지
+    @GetMapping("{orderId}")
+    public String orderBeforePay(@SessionCart Cart cart,Model model,@Login Member member,@PathVariable Long orderId) throws IllegalAccessException {
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
+            log.info("멤버이름 : {}",member.getUsername());
+        }
+        //기본적인 헤더 필요한 정보 주입 (카테고리, 카트사이즈)
+        model.addAttribute("category", CategoryService.category);
+        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
+
+        //오더아이디로 불러오기
+        Order findOrder = orderService.findOrderById(orderId);
+
+        //오더 상태체크
+        if (findOrder.getOrderStatus() != OrderStatus.PRE_ORDER) {
+            throw new IllegalAccessException("결제 전 오더만 결제할 수 있습니다.");
+        }
+
+        //오더 가격
+        int totalPrice = findOrder.getTotalPrice();
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("orderId", orderId);
+
+
+        return "order/order";
+    }
+
+
+    // 오더 결제
+    @PostMapping("pay")
+    public String payOrder(@SessionCart Cart cart,Model model,@Login Member member,@ModelAttribute PayForm payForm)  {
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
+        }
+        //기본적인 헤더 필요한 정보 주입 (카테고리, 카트사이즈)
+        model.addAttribute("category", CategoryService.category);
+        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
+
+        Long orderId = payForm.getOrderId();
+        orderService.payOrder(orderId, payForm);
+
+
+        return "redirect:/";
+    }
+
+
+
+    //카트에서 오더 생성
     @PostMapping("new")
     @ResponseBody
-    public Object order(@Login Member member, @RequestBody List<OrderForm> orderForms, HttpSession session) {
+    public Object order(@Login Member member, @RequestBody List<OrderForm> orderForms, HttpSession session,@SessionCart Cart cart) {
+        Long orderId;
+
         //로그인 상태체크
         if (member == null) {
             return makeErrorCode("NOT_LOGIN", "구매는 로그인이 필요합니다.");
         }
 
 
-        if (orderForms == null) {
+
+        if (cart==null || cart.getOrderItems().size()==0) {
             return makeErrorCode("NULL", "카트가 비었습니다");
         }
 
         try {
-            orderService.makeOrder(orderForms, member,session);
+            orderId = orderService.makeOrder(orderForms, member, session);
         } catch (IllegalStateException e) {
             return makeErrorCode("IllegalStateException", e.getMessage());
         }
@@ -50,11 +105,13 @@ public class OrderController {
         Map<String, Object> successCode = new HashMap<>();
         successCode.put("code", "OK");
         successCode.put("message", "오더");
+        successCode.put("orderId", orderId);
 
 
         return successCode;
     }
 
+    //주문목록 뽑기
     @GetMapping("list")
     public String orderList(@Login Member member, Model model, @SessionCart Cart cart, @ModelAttribute OrderSearch orderSearch) {
 

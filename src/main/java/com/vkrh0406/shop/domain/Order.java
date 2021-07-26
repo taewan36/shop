@@ -44,7 +44,13 @@ public class Order extends BaseEntity{
     }
 
 
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
 
     //생성 메서드
     public static Order CreateOrder(Member member, Delivery delivery, List<OrderItem> orderItems){

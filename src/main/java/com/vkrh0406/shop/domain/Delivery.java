@@ -25,6 +25,9 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public Delivery(Address address, DeliveryStatus status) {
         this.address = address;

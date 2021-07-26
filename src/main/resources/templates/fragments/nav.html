@@ -19,9 +19,9 @@
                             <hr class="dropdown-divider"/>
                         </li>
                         <li th:each="subCategory1 : ${category.subCategories}">
-                            <a class="dropdown-item" th:href="@{/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
+                            <a class="dropdown-item" th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
                             <div th:each="subCategory2 : ${subCategory1.subCategories}" th:if="${subCategory1.subCategories!=null}">
-                                <a class="dropdown-item" th:href="@{/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
+                                <a class="dropdown-item" th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
                             </div>
                             <hr class="dropdown-divider"/>
                         </li>

@@ -29,9 +29,14 @@ public class CategoryService {
 
 
 
+    //DB에 있는 카테고리를 메모리에 dto상태로 올려놓기
     public void updateCategory(){
         this.category= createCategoryRoot();
     }
+
+
+
+
 
 //    public Map<Long, String> makeCategoriesList(){
 //        CategoryDto category = CategoryService.category;
@@ -54,6 +59,7 @@ public class CategoryService {
 
 
 
+    //
     public CategoryDto createCategoryRoot(){
       //  log.info("createCategoryRoot 실행");
         Map<Long, List<CategoryDto>> groupingByParent = categoryRepository.findAll()
@@ -78,6 +84,10 @@ public class CategoryService {
 
         // 2. sub categories 셋팅
         parent.setSubCategories(subCategories);
+        //children id 리스트에 주입
+        for (CategoryDto subCategory : subCategories) {
+            parent.getChildrenIds().add(subCategory.getCategoryId());
+        }
 
         // 재귀적으로 subCategories 들에 대해서도 수행
         subCategories.stream()

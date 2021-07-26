@@ -17,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -30,9 +31,31 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    @GetMapping("category/{categoryId}")
+    public String categoryItems(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request,
+                                @PageableDefault(size = 8) Pageable pageable, ItemSearch itemSearch, @PathVariable Long categoryId) {
+
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
+        }
+
+        Page<ItemDto> itemDtos = itemService.searchCategoryItems(itemSearch, pageable,categoryId);
+
+        model.addAttribute("homeItemDto", itemDtos);
+        model.addAttribute("category", CategoryService.category);
+        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
+        model.addAttribute("categoryId", categoryId);
+
+
+        return "item/itemAllWithCategory";
+
+
+    }
+
+    //모든 아이템 검색
     @GetMapping("all")
     public String itemAll(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request,
-                          @PageableDefault(size = 8) Pageable pageable, ItemSearch itemSearch){
+                          @PageableDefault(size = 8) Pageable pageable, ItemSearch itemSearch) {
 
         if (member != null) {
             model.addAttribute("username", member.getUsername());

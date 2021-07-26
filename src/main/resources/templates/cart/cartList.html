@@ -143,7 +143,7 @@
 <!-- Core theme JS-->
 <script src="/js/scripts.js"></script>
 </body>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 
     $(function () {
         $("#orderButton").on("click", function () {
@@ -175,7 +175,7 @@
                 data        : JSON.stringify(objParams),
                 success     : function(retVal){
                     if (retVal.code == "OK") {
-                        location.href = "/order/list";
+                        location.href = "/order/"+ retVal.orderId;
                     }else if (retVal.code == "NOT_LOGIN") {
                         alert(retVal.message);
                         location.href = "/member/login";

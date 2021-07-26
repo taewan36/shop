@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    public Optional<Order> findById(Long id);
+    public Optional<Order> findOrderById(Long id);
+
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update OrderItem o set o.cart.id = NULL where o.cart.id = :cartId")

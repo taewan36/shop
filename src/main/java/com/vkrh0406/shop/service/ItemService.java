@@ -26,6 +26,11 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
 
+    public Page<ItemDto> searchCategoryItems(ItemSearch itemSearch, Pageable pageable,Long categoryId) {
+        Page<ItemDto> itemDtos = itemRepository.searchItemWithCategory(itemSearch, pageable, categoryId);
+        return itemDtos;
+    }
+
     public Page<ItemDto> searchAllItem(ItemSearch itemSearch,Pageable pageable){
         Page<ItemDto> itemDtos = itemRepository.searchItem(itemSearch, pageable);
         return itemDtos;
