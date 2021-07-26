@@ -25,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new LoginCheckInterceptor())
                 .addPathPatterns("/cart/purchase")
-                .addPathPatterns("/order/**");
+                .addPathPatterns("/order/**")
+                .excludePathPatterns("/order/new");
     }
 }

@@ -165,7 +165,7 @@
 
             });
 
-            let button=this;
+
 
             $.ajax({
                 url         : "/order/new",
@@ -190,7 +190,8 @@
                 }
             })
 
-            this.prop('disabled', true);
+            $(this).prop('disabled', true);
+
 
         });
 

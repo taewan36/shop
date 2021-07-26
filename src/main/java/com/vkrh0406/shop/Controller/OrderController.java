@@ -90,9 +90,8 @@ public class OrderController {
             return makeErrorCode("NOT_LOGIN", "구매는 로그인이 필요합니다.");
         }
 
-
-
-        if (cart==null || cart.getOrderItems().size()==0) {
+        //카트 체크크
+       if (cart==null || cart.getOrderItems().size()==0) {
             return makeErrorCode("NULL", "카트가 비었습니다");
         }
 
