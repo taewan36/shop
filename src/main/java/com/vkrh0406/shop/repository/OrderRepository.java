@@ -6,15 +6,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public Optional<Order> findOrderById(Long id);
 
+    public Optional<Order> findOrderByUuid(String uuid);
+
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update OrderItem o set o.cart.id = NULL where o.cart.id = :cartId")
     public void deleteOrdersByCartId(@Param("cartId")long cartId);
+
+    public List<Order> findOrdersByMemberId(Long memberId);
 
 }

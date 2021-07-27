@@ -78,7 +78,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         findCategoryChildren(CategoryService.category, categoryIds, categoryId);
 
         List<ItemDto> content = queryFactory
-                .select(new QItemDto(item.id,item.name,item.price,item.price,item.ratingStar,item.uploadFile.storeFileName))
+                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.uploadFile.storeFileName))
                 .from(item)
                 .orderBy(item.id.desc())
                 .where(categoryCondition(categoryIds),searchCondition(itemSearch.getItemName()))
@@ -117,7 +117,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     public Page<ItemDto> searchItem(ItemSearch itemSearch, Pageable pageable) {
 
         List<ItemDto> content = queryFactory
-                .select(new QItemDto(item.id,item.name,item.price,item.price,item.ratingStar,item.uploadFile.storeFileName))
+                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.uploadFile.storeFileName))
                 .from(item)
                 .orderBy(item.id.desc())
                 .where(searchCondition(itemSearch.getItemName()))

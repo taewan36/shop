@@ -15,6 +15,8 @@
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
 </header>
 <!-- Section-->
 <section class="py-5">
@@ -75,7 +77,7 @@
             <div class="form-group row">
                 <div class="offset-4 col-8">
                     <input type="hidden" name="orderId" th:value="${orderId}" />
-                    <button name="submit" type="submit" class="btn btn-primary">결제</button>
+                    <button name="submit" type="button" onclick="requestPay()" class="btn btn-primary">결제</button>
                 </div>
             </div>
         </form>
@@ -91,7 +93,49 @@
 <!-- Core theme JS-->
 <script src="/js/scripts.js"></script>
 </body>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+
+    IMP.init("imp56029372");
+
+    function requestPay() {
+        // IMP.request_pay(param, callback) 호출
+        IMP.request_pay({ // param
+            pg: "kcp",
+            pay_method: "card",
+            merchant_uid: [[${orderUuid}]],
+            name: "책",
+            amount: [[${totalPrice}]],
+            buyer_email: "gildong@gmail.com",
+            buyer_name: [[${username}]],
+            buyer_tel: "010-4242-4242",
+            buyer_addr: $("#roadAddrPart1").val(),
+            buyer_postcode: $("#zipNo").val()
+        }, function (rsp) { // callback
+            if (rsp.success) {
+                jQuery.ajax({
+                    url: "/order/payCheck",
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    data: JSON.stringify({
+                        imp_uid: (rsp.imp_uid),
+                        merchant_uid: (rsp.merchant_uid)
+                    })
+                }).done(function (data){
+                    //가맹점 서버 결제 api 성공시 로직
+                    alert("가맹점 서버 결제 api 성공")
+
+                })
+                // 결제 성공 시 로직,
+
+            } else {
+
+                alert("가맹점 서버 결제 api 실패")
+                // 결제 실패 시 로직,
+
+            }
+        });
+    }
+
 
     function goPopup() {
         // 호출된 페이지(jusopopup.jsp)에서 실제 주소검색URL(https://www.juso.go.kr/addrlink/addrLinkUrl.do)를 호출하게 됩니다.

@@ -1,5 +1,8 @@
 package com.vkrh0406.shop.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vkrh0406.shop.domain.*;
 import com.vkrh0406.shop.dto.OrderDto;
 import com.vkrh0406.shop.form.OrderForm;
@@ -9,12 +12,18 @@ import com.vkrh0406.shop.repository.MemberRepository;
 import com.vkrh0406.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +33,178 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper;
 
 
+    //결제 검증 프로세스
+    @Transactional
+    public Map<String,Object> payCheckProcess(String request) throws JsonProcessingException {
+
+        HashMap<String, String> requestMap = objectMapper.readValue(request, new TypeReference<HashMap<String, String>>() {
+        });
+
+        log.info("결제 검증 프로세스 시작");
+        //리턴할 메시지
+        Map<String, Object> message = new HashMap<>();
+        String access_token=null;
+        //액세스 토큰 획득후 json -> map 으로 바꾸는 과정
+        try {
+            ResponseEntity<String> accessTokenData = getAccessToken();
+            String body = accessTokenData.getBody().toString();
+            Map<String, String> response = (Map<String, String>) objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            }).get("response");
+
+            //액세스 토큰 획득
+            access_token = response.get("access_token");
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+
+
+        log.info("액세스 토큰 {}",access_token );
+
+        //imp_uid
+        String imp_uid = requestMap.get("imp_uid");
+        //order_id
+        String order_id = requestMap.get("merchant_uid");
+
+        Map<String, String> paymentDataResponse;
+        try {
+            //액세스 토큰을 이용하여 결제 내역 조회
+            ResponseEntity<String> paymentData = getPaymentData(imp_uid, access_token);
+            String paymentDataBody = paymentData.getBody();
+            //paymentData json을 map으로 파싱
+            Map<String, Object> paymentDataAll = objectMapper.readValue(paymentDataBody, new TypeReference<Map<String, Object>>() {
+            });
+            log.info("paymentData= {}",paymentDataAll);
+            //Response 값을 얻기 위해 Object를 Map으로 형변환
+             paymentDataResponse = (Map<String, String>) paymentDataAll.get("response");
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+
+        //실제 결제 가격
+        String amount =String.valueOf(paymentDataResponse.get("amount"));
+        int priceAmount = Integer.parseInt(amount);
+
+        log.info("실제 결제 가격 {}", amount);
+
+        Order order = orderRepository.findOrderByUuid(order_id).orElseThrow(() -> new IllegalStateException("이 uuid와 일치하는 오더가 없습니다"));
+
+        // 실제 가격과 결제 가격이 일치하면 결제 성공
+        if (priceAmount == order.getTotalPrice()) {
+
+            order.setOrderStatus(OrderStatus.ORDER);
+
+            message.put("code", "success");
+            message.put("message", "결제 성공!");
+
+
+            return message;
+        }else{
+            message.put("code", "fail");
+            message.put("message", "가격이 불일치합니다.");
+            return message;
+        }
+
+    }
+
+    // imp_uid로 아임포트 서버에서 결제 취소
+    private ResponseEntity<String> cancelPay(String imp_uid, String merchant_uid, String access_token) throws JsonProcessingException {
+
+        //헤더 설정
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+
+        //JSON 바인딩
+        Map<String, Object> map = new HashMap<>();
+        String params1 = objectMapper.writeValueAsString(map);
+
+        //HttpEntity에 헤더 및 params 설정
+        HttpEntity entity = new HttpEntity(params1, httpHeaders);
+
+        //RestTemplate의 exchange 메소드를 통해 URL에 HttpEntity와 함께 요청
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://api.iamport.kr/payments/" + imp_uid, HttpMethod.GET,
+                entity, String.class);
+
+
+        return responseEntity;
+
+    }
+
+
+    // imp_uid로 아임포트 서버에서 결제 정보 조회
+    private ResponseEntity<String> getPaymentData(String imp_uid,String access_token) throws JsonProcessingException {
+
+        //헤더 설정
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        httpHeaders.set("Authorization",access_token);
+
+        //JSON 바인딩
+        Map<String, Object> map = new HashMap<>();
+        String params1 = objectMapper.writeValueAsString(map);
+
+        //HttpEntity에 헤더 및 params 설정
+        HttpEntity entity = new HttpEntity(params1, httpHeaders);
+
+        //RestTemplate의 exchange 메소드를 통해 URL에 HttpEntity와 함께 요청
+        RestTemplate restTemplate = new RestTemplate();
+        log.info("imp_uid= {}", imp_uid);
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://api.iamport.kr/payments/"+imp_uid, HttpMethod.GET,
+                entity, String.class);
+
+
+        return responseEntity;
+
+    }
+
+    // 아이앰포트 api 호출 액세스 토큰값 가져오기
+    private ResponseEntity<String> getAccessToken() throws JsonProcessingException {
+
+        //헤더 설정
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        //JSON 바인딩
+        Map<String, Object> map = new HashMap<>();
+        map.put("imp_key", "0613765197661947");
+        map.put("imp_secret", "c546efb7c85585f7a3e52a287fa0bed7456baad83a2663490a8d3bf1768d4310ecd9174522007993");
+        String params1 = objectMapper.writeValueAsString(map);
+
+        //HttpEntity에 헤더 및 params 설정
+        HttpEntity entity = new HttpEntity(params1, httpHeaders);
+
+        //RestTemplate의 exchange 메소드를 통해 URL에 HttpEntity와 함께 요청
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://api.iamport.kr/users/getToken", HttpMethod.POST,
+                entity, String.class);
+
+
+        return responseEntity;
+
+    }
+
+
+
+
+
+
+    //해당 멤버 오더리스트 뽑기
+    public List<OrderDto> findAllByMemberId(Member member) {
+        Member findMember = memberRepository.findMemberById(member.getId()).orElseThrow(() -> new IllegalStateException("이 멤버 id를 찾을수 없습니다."));
+
+        List<OrderDto> result = orderRepository.findOrdersByMemberId(findMember.getId())
+                .stream()
+                .map(o -> new OrderDto(o.getId(), o.getTotalPrice(), o.getOrderDate(), o.getOrderStatus(), o.getDelivery(), o.getOrderItems()))
+                .collect(Collectors.toList());
+
+        return result;
+    }
 
     //pay
     @Transactional

@@ -14,8 +14,29 @@
         </div>
     </div>
 </header>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Category</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <li th:each="subCategory1 : ${category.subCategories}">
+                    <a class="nav-link active" th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
+                    <div th:each="subCategory2 : ${subCategory1.subCategories}" th:if="${subCategory1.subCategories!=null}">
+                        <a class="dropdown-item" th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
+                    </div>
+                    <hr class="dropdown-divider"/>
+                </li>
+
+            </div>
+        </div>
+    </div>
+</nav>
 <!-- Section-->
 <section class="py-5">
+
     <div class="container">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center"
@@ -57,7 +78,10 @@
     </div>
 
 
+
     <div class="container px-4 px-lg-5 mt-5">
+
+
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             <div class="col mb-5" th:each="itemDto :${homeItemDto}">
                 <div class="card h-100">

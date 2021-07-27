@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
@@ -18,6 +19,9 @@ public class Order extends BaseEntity{
     @GeneratedValue
     @Column(name = "order_id")
     private Long id;
+
+    @GeneratedValue(generator = "uuid2")
+    private String uuid;
 
     private int totalPrice;
 
@@ -57,6 +61,7 @@ public class Order extends BaseEntity{
         Order order = new Order();
         order.setMember(member);
         order.setDelivery(delivery);
+        order.setUuid(UUID.randomUUID().toString());
 
         int totalPrice=0;
         for (OrderItem orderItem : orderItems) {

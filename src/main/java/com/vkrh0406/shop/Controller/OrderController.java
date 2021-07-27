@@ -1,5 +1,9 @@
 package com.vkrh0406.shop.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.vkrh0406.shop.domain.Cart;
 import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.domain.Order;
@@ -7,6 +11,7 @@ import com.vkrh0406.shop.domain.OrderStatus;
 import com.vkrh0406.shop.dto.OrderDto;
 import com.vkrh0406.shop.form.OrderForm;
 import com.vkrh0406.shop.form.PayForm;
+import com.vkrh0406.shop.jsonparse.AccessToken;
 import com.vkrh0406.shop.resolver.Login;
 import com.vkrh0406.shop.resolver.SessionCart;
 import com.vkrh0406.shop.search.OrderSearch;
@@ -14,11 +19,17 @@ import com.vkrh0406.shop.service.CategoryService;
 import com.vkrh0406.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.http.*;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +40,7 @@ import java.util.Map;
 @RequestMapping("order")
 public class OrderController {
     private final OrderService orderService;
+    private final ObjectMapper objectMapper;
 
 
     //생성한 오더 결제 전 페이지
@@ -54,6 +66,7 @@ public class OrderController {
         int totalPrice = findOrder.getTotalPrice();
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("orderId", orderId);
+        model.addAttribute("orderUuid", findOrder.getUuid());
 
 
         return "order/order";
@@ -77,12 +90,26 @@ public class OrderController {
         return "redirect:/";
     }
 
+    //결제 검증 프로세스
+    @PostMapping("payCheck")
+    @ResponseBody
+    public Object payOrderCheck(@RequestBody String request) throws JsonProcessingException {
+
+
+
+        Map<String, Object> message = orderService.payCheckProcess(request);
+
+
+        return message;
+    }
+
 
 
     //카트에서 오더 생성
     @PostMapping("new")
     @ResponseBody
-    public Object order(@Login Member member, @RequestBody List<OrderForm> orderForms, HttpSession session,@SessionCart Cart cart) {
+    public Object order(@Login Member member, @RequestBody List<OrderForm> orderForms, HttpSession session, @SessionCart Cart cart) {
+
         Long orderId;
 
         //로그인 상태체크
@@ -91,7 +118,7 @@ public class OrderController {
         }
 
         //카트 체크크
-       if (cart==null || cart.getOrderItems().size()==0) {
+        if (cart == null || cart.getOrderItems().size() == 0) {
             return makeErrorCode("NULL", "카트가 비었습니다");
         }
 
@@ -121,7 +148,7 @@ public class OrderController {
             model.addAttribute("username", member.getUsername());
         }
 
-        List<OrderDto> orderDtos = orderService.findAllOrder();
+        List<OrderDto> orderDtos = orderService.findAllByMemberId(member);
 
         model.addAttribute("orderDto", orderDtos);
 

@@ -36,23 +36,26 @@ public class HomeController {
     @GetMapping("")
     public String shopHome(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request) {
 
-        if (member != null) {
-            model.addAttribute("username", member.getUsername());
-        }
+        return "redirect:/item/all";
 
 
-        List<Item> homeItem = itemService.getHomeItem();
-        List<ItemDto> homeItemDto = homeItem.stream()
-                .map(o -> new ItemDto(o.getId(), o.getName(), o.getPrice(),
-                        o.getDiscountPrice(), o.getRatingStar(), o.getUploadFile().getStoreFileName()))
-                .collect(Collectors.toList());
+//        if (member != null) {
+//            model.addAttribute("username", member.getUsername());
+//        }
+//
+//
+//        List<Item> homeItem = itemService.getHomeItem();
+//        List<ItemDto> homeItemDto = homeItem.stream()
+//                .map(o -> new ItemDto(o.getId(), o.getName(), o.getPrice(),
+//                        o.getDiscountPrice(), o.getRatingStar(), o.getUploadFile().getStoreFileName()))
+//                .collect(Collectors.toList());
+//
+//
+//        model.addAttribute("homeItemDto", homeItemDto);
+//        model.addAttribute("category", CategoryService.category);
+//        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
 
 
-        model.addAttribute("homeItemDto", homeItemDto);
-        model.addAttribute("category", CategoryService.category);
-        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
-
-        return "home";
 
     }
 
