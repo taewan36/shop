@@ -1,6 +1,7 @@
 package com.vkrh0406.shop.config;
 
 
+import com.vkrh0406.shop.interceptor.AdminCheckInterceptor;
 import com.vkrh0406.shop.interceptor.LoginCheckInterceptor;
 import com.vkrh0406.shop.resolver.LoginMemberArgumentResolver;
 import com.vkrh0406.shop.resolver.SessionCartArgumentResolver;
@@ -28,5 +29,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/order/**")
                 .excludePathPatterns("/order/new")
                 .excludePathPatterns("/order/payCheck");
+
+        registry.addInterceptor(new AdminCheckInterceptor())
+                .addPathPatterns("/admin/**");
     }
 }

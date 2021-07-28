@@ -1,9 +1,6 @@
 package com.vkrh0406.shop.dto;
 
-import com.vkrh0406.shop.domain.Delivery;
-import com.vkrh0406.shop.domain.Item;
-import com.vkrh0406.shop.domain.OrderItem;
-import com.vkrh0406.shop.domain.OrderStatus;
+import com.vkrh0406.shop.domain.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

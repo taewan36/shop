@@ -20,10 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpSession;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,13 +37,15 @@ public class OrderService {
     @Transactional
     public Map<String,Object> payCheckProcess(String request) throws JsonProcessingException {
 
-        HashMap<String, String> requestMap = objectMapper.readValue(request, new TypeReference<HashMap<String, String>>() {
-        });
+        //들어온 json 파싱
+        HashMap<String, String> requestMap = objectMapper.readValue(request, new TypeReference<HashMap<String, String>>() {});
 
         log.info("결제 검증 프로세스 시작");
+
         //리턴할 메시지
         Map<String, Object> message = new HashMap<>();
         String access_token=null;
+
         //액세스 토큰 획득후 json -> map 으로 바꾸는 과정
         try {
             ResponseEntity<String> accessTokenData = getAccessToken();
@@ -198,7 +197,10 @@ public class OrderService {
     public List<OrderDto> findAllByMemberId(Member member) {
         Member findMember = memberRepository.findMemberById(member.getId()).orElseThrow(() -> new IllegalStateException("이 멤버 id를 찾을수 없습니다."));
 
-        List<OrderDto> result = orderRepository.findOrdersByMemberId(findMember.getId())
+
+
+        //id desc 순으로 orderDto 리스트 뽑기
+        List<OrderDto> result = orderRepository.findOrdersByMemberIdOrderByIdDesc(findMember.getId())
                 .stream()
                 .map(o -> new OrderDto(o.getId(), o.getTotalPrice(), o.getOrderDate(), o.getOrderStatus(), o.getDelivery(), o.getOrderItems()))
                 .collect(Collectors.toList());
@@ -234,6 +236,7 @@ public class OrderService {
         Cart cart = findMember.getCart();
 
 
+
         //오더 생성
         Order order = Order.CreateOrder(findMember, new Delivery(findMember.getAddress(), DeliveryStatus.READY), cart.getOrderItems());
 
@@ -265,5 +268,34 @@ public class OrderService {
         return orderRepository.findAll().stream()
                 .map(o -> new OrderDto(o.getId(), o.getTotalPrice(), o.getOrderDate(), o.getOrderStatus(), o.getDelivery(), o.getOrderItems()))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void cancel(Long orderId, Member member) {
+        // orderId로 오더 가져오기
+        Order order = orderRepository.findOrderById(orderId).orElseThrow(() -> new IllegalStateException("이런 orderId는 없습니다."));
+
+        //이 오더의 주인이 해당한 멤버가 아니면?
+        if (!order.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("세션 멤버가 이 오더의 주인이 아닙니다.");
+        }
+
+        order.cancel();
+
+
+    }
+
+    //오더 상세 내용 가져오기
+    public OrderDto getOrderContent(Long orderId, Member member) {
+        Order order = orderRepository.findOrderById(orderId).orElseThrow(() -> new IllegalStateException("이런 orderId는 없습니다"));
+
+        //이 오더의 주인이 해당 멤버가 아닐경우
+        if (!order.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("이 멤버는 오더의 주인이 아닙니다.");
+        }
+
+        OrderDto orderDto = new OrderDto(order.getId(), order.getTotalPrice(), order.getOrderDate(), order.getOrderStatus(), order.getDelivery(), order.getOrderItems());
+
+        return orderDto;
     }
 }

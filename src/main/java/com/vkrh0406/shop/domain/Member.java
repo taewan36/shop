@@ -21,6 +21,9 @@ public class Member {
 
     private String username;
 
+    private boolean isAdmin;
+
+
     @Embedded
     private Address address;
 
@@ -45,5 +48,9 @@ public class Member {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

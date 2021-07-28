@@ -43,12 +43,42 @@ public class OrderController {
     private final ObjectMapper objectMapper;
 
 
-    //생성한 오더 결제 전 페이지
-    @GetMapping("{orderId}")
-    public String orderBeforePay(@SessionCart Cart cart,Model model,@Login Member member,@PathVariable Long orderId) throws IllegalAccessException {
+    //오더 상세 페이지
+    @GetMapping("content/{orderId}")
+    public String getOrderContent(@PathVariable Long orderId, @Login Member member, @SessionCart Cart cart, Model model) {
         if (member != null) {
             model.addAttribute("username", member.getUsername());
-            log.info("멤버이름 : {}",member.getUsername());
+            log.info("멤버이름 : {}", member.getUsername());
+        }
+
+        //기본적인 헤더 필요한 정보 주입 (카테고리, 카트사이즈)
+        model.addAttribute("category", CategoryService.category);
+        model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
+
+        OrderDto orderDto = orderService.getOrderContent(orderId, member);
+
+        model.addAttribute("orderDto", orderDto);
+
+
+        return "order/orderContent";
+    }
+
+    //오더 캔슬
+    @GetMapping("cancel/{orderId}")
+    public String cancelOrder(@PathVariable Long orderId, @Login Member member) {
+
+        log.info("오더 캔슬");
+        orderService.cancel(orderId, member);
+
+        return "redirect:/order/list";
+    }
+
+    //생성한 오더 결제 전 페이지
+    @GetMapping("{orderId}")
+    public String orderBeforePay(@SessionCart Cart cart, Model model, @Login Member member, @PathVariable Long orderId) throws IllegalAccessException {
+        if (member != null) {
+            model.addAttribute("username", member.getUsername());
+            log.info("멤버이름 : {}", member.getUsername());
         }
         //기본적인 헤더 필요한 정보 주입 (카테고리, 카트사이즈)
         model.addAttribute("category", CategoryService.category);
@@ -73,9 +103,9 @@ public class OrderController {
     }
 
 
-    // 오더 결제
+    // 오더 결제 (결제과정 생략한 결제)
     @PostMapping("pay")
-    public String payOrder(@SessionCart Cart cart,Model model,@Login Member member,@ModelAttribute PayForm payForm)  {
+    public String payOrder(@SessionCart Cart cart, Model model, @Login Member member, @ModelAttribute PayForm payForm) {
         if (member != null) {
             model.addAttribute("username", member.getUsername());
         }
@@ -87,7 +117,7 @@ public class OrderController {
         orderService.payOrder(orderId, payForm);
 
 
-        return "redirect:/";
+        return "redirect:/order/list";
     }
 
     //결제 검증 프로세스
@@ -96,13 +126,11 @@ public class OrderController {
     public Object payOrderCheck(@RequestBody String request) throws JsonProcessingException {
 
 
-
         Map<String, Object> message = orderService.payCheckProcess(request);
 
 
         return message;
     }
-
 
 
     //카트에서 오더 생성

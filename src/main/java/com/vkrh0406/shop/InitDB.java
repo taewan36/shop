@@ -28,6 +28,8 @@ public class InitDB {
         initService.initItemDB();
         initService.initMemberDb();
 
+        initService.updateCategory();
+
     }
 
 
@@ -40,6 +42,10 @@ public class InitDB {
         private final CategoryService categoryService;
         private final ItemRepository itemRepository;
         private final MemberRepository memberRepository;
+
+        public void updateCategory(){
+            categoryService.updateCategory();
+        }
 
         public void initCategory() {
 
@@ -79,7 +85,7 @@ public class InitDB {
             Category category9 = new Category("인간관계", 9L, 3L);
             categoryRepository.save(category9);
 
-            categoryService.updateCategory();
+
 
 
 
@@ -90,7 +96,9 @@ public class InitDB {
             if (all.size() != 0) {
                 return;
             }
-            memberRepository.save(new Member("test", "test!", "test", null));
+            Member member = new Member("test", "test!", "test", null);
+            member.setAdmin(true);
+            memberRepository.save(member);
         }
 
 

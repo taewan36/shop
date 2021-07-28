@@ -40,6 +40,11 @@ public class OrderItem {
         this.orderPrice = item.getPrice() * count;
     }
 
+    //오더생성 아이템 잔고 확인
+    public void removeItemCount(){
+        item.removeQuantity(count);
+    }
+
     public void addCount(int count){
   //      item.removeQuantity(count);
         this.count+=count;

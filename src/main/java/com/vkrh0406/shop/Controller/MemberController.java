@@ -109,7 +109,7 @@ public class MemberController {
         }
 
 
-        return "redirect:/" + ((redirectURI != null) ? redirectURI : "");
+        return "redirect:" + ((redirectURI != null) ? redirectURI : "/");
     }
 
     @GetMapping("logout")

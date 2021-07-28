@@ -77,7 +77,9 @@
             <div class="form-group row">
                 <div class="offset-4 col-8">
                     <input type="hidden" name="orderId" th:value="${orderId}" />
+                    <span>테스트 결제입니다. 실제로 결제가 이루어지나. 밤 12시가 지나면 환불됩니다.<br></span>
                     <button name="submit" type="button" onclick="requestPay()" class="btn btn-primary">결제</button>
+                    <button name="submit2" type="submit" class="btn btn-primary">결제과정 생략하고 결제</button>
                 </div>
             </div>
         </form>
@@ -121,8 +123,15 @@
                         merchant_uid: (rsp.merchant_uid)
                     })
                 }).done(function (data){
-                    //가맹점 서버 결제 api 성공시 로직
-                    alert("가맹점 서버 결제 api 성공")
+                    if (data.code = "success") {
+                        alert(data.message);
+                        location.href = "/order/list";
+                    }
+                    else{
+                        alert(data.message);
+                    }
+                    // //가맹점 서버 결제 api 성공시 로직
+                    // alert("가맹점 서버 결제 api 성공");
 
                 })
                 // 결제 성공 시 로직,

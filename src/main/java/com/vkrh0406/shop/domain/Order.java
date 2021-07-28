@@ -65,6 +65,9 @@ public class Order extends BaseEntity{
 
         int totalPrice=0;
         for (OrderItem orderItem : orderItems) {
+            //오더 생성을 위해 아이템 잔고 확인하고 잔고 숫자 업데이트
+            orderItem.removeItemCount();
+
             order.addOrderItem(orderItem);
             //아직 save 되기전 order를 담아도 되는가??? 잘 모르겠음
 
@@ -81,6 +84,10 @@ public class Order extends BaseEntity{
 
     //주문 취소
     public void cancel(){
+
+        if (delivery.getStatus() == DeliveryStatus.DELIVERING) {
+            throw new IllegalStateException("이미 배송출발한 상품은 취소가 불가능합니다.");
+        }
         if (delivery.getStatus() == DeliveryStatus.COMP) {
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
         }

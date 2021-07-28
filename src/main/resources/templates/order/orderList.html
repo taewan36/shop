@@ -31,22 +31,32 @@
                 <th>대표상품 주문가격</th>
                 <th>대표상품 주문수량</th>
                 <th>상태</th>
+                <th>배송 상태</th>
                 <th>일시</th>
-                <th></th>
+                <th>버튼</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="orders : ${orderDto}">
                 <td th:text="${orders.orderId}"></td>
-                <td th:text="${orders.orderItems[0].item.name}"></td>
+                <td>
+                    <a th:text="${orders.orderItems[0].item.name}"
+                            th:href="@{/order/content/{orderId} (orderId=${orders.orderId})}" style="color: #0c63e4"></a>
+
+                </td>
                 <td th:text="${orders.orderItems[0].item.getRealPrice()}"></td>
                 <td th:text="${orders.orderItems[0].count}"></td>
                 <td th:text="${orders.orderStatus}"></td>
+                <td th:text="${orders.delivery.status}"></td>
                 <td th:text="${#temporals.format(orders.orderDate,'yyyy-MM-dd HH:mm')}"></td>
                 <td>
-                    <a th:if="${orders.orderStatus == 'ORDER'}" href="#"
-                       th:href="'javascript:cancel('+${orders.orderId}+')'"
-                       class="btn btn-danger">CANCEL</a>
+                    <a th:if="${orders.orderStatus.name()=='PRE_ORDER'}"
+                       th:onclick="|location.href='@{/order/{orderId} (orderId=${orders.orderId})}'|"
+                       class="btn btn-danger">결제</a>
+                    <a th:if="${orders.orderStatus.name()!='CANCEL'}"
+                       th:onclick="|location.href='@{/order/cancel/{orderId} (orderId=${orders.orderId})}'|"
+                    class="btn btn-danger">CANCEL</a>
+
                 </td>
             </tr>
             </tbody>
@@ -66,6 +76,10 @@
 <script src="/js/scripts.js"></script>
 </body>
 <script type="text/javascript">
+
+    $(function cancelOrder(orderId){
+        this.href = "/order/content/" + orderId;
+    })
 
     $(function () {
         $("#orderButton").on("click", function () {

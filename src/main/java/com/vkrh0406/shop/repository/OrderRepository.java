@@ -23,4 +23,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public List<Order> findOrdersByMemberId(Long memberId);
 
+    public List<Order> findOrdersByMemberIdOrderByIdDesc(Long memberId);
+
 }
