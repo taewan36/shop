@@ -8,9 +8,10 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <ul th:replace="admin/fragments/sidebar :: sidebar" />
+    <ul th:replace="admin/fragments/sidebar :: sidebar"/>
 
     <!-- Content Wrapper -->
+
     <div id="content-wrapper" class="d-flex flex-column">
 
         <!-- Main Content -->
@@ -79,7 +80,7 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/member/logout" >
+                            <a class="dropdown-item" href="/member/logout">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -95,7 +96,6 @@
             <div class="container-fluid">
 
 
-
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
@@ -106,21 +106,51 @@
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>이름</th>
-                                    <th>로그인Id</th>
-                                    <th>어드민유무</th>
+                                    <th>오더 ID</th>
+                                    <th>멤버 ID</th>
+                                    <th>대표 상품 이름</th>
+                                    <th>오더 상태</th>
+                                    <th>배송 주소</th>
+                                    <th>배송 상태</th>
                                     <th>삭제</th>
 
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                <tr th:each="member : ${memberList}">
-                                    <td th:text="${member.username}">이름</td>
-                                    <td th:text="${member.loginId}">로그인 Id</td>
-                                    <td th:text="${member.isAdmin()}">어드민 유무</td>
+                                <tr th:each="order : ${orderDto}">
+                                    <td class="orderId" th:text="${order.orderId}">오더 ID</td>
+                                    <td th:text="${order.memberId}">멤버 Id</td>
+                                    <td th:text="${order.orderItems[0].item.name}">대표 상품 이름</td>
                                     <td>
-                                        <button type="button" th:onclick="|location.href='@{/admin/member/delete/{memberId}(memberId=${member.id})}'|" class="order-buttons">
+                                        <select id="selectOrderStatus" name="orderStatus" class="form-control">
+                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.OrderStatus).values()}"
+                                                    th:value="${status}"
+                                                    th:text="${status}"
+                                                    th:selected="${order.orderStatus.name()==status.name()}"
+                                                    th:style="${order.orderStatus.name()==status.name()} ? 'color: #0a53be' : '' "
+                                            >
+                                            </option>
+                                        </select>
+
+                                    </td>
+                                    <td th:text="${order.delivery.address.addrPart1 + ' ' + order.delivery.address.addrPart2 + ' ' + order.delivery.address.addrDetail + ' ' +
+                                    order.delivery.address.zipcode}"></td>
+                                    <td>
+                                        <select id="selectDeliveryStatus" name="deliveryStatus" class="form-control">
+                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.DeliveryStatus).values()}"
+                                                    th:value="${status}"
+                                                    th:text="${status}"
+                                                    th:selected="${order.delivery.status.name()==status.name()}"
+                                                    th:style="${order.delivery.status.name()==status.name()} ? 'color: #0a53be' : '' "
+                                            >
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button"
+                                                th:onclick="|location.href='@{/admin/order/delete/{orderId}(orderId=${order.orderId})}'|"
+                                                class="order-buttons">
                                             삭제
                                         </button>
 
@@ -139,35 +169,36 @@
                 <div class="container">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center"
-                            th:with="start=${T(Math).floor(memberList.number/10)*10},
-                last=(${start + 9 < memberList.totalPages ? start + 9 : memberList.totalPages})">
+                            th:with="start=${T(Math).floor(orderDto.number/10)*10},
+                last=(${start + 9 < orderDto.totalPages ? start + 9 : orderDto.totalPages})">
                             <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/memberList(page=0)}" aria-label="First">
+                                <a class="page-link" th:href="@{/admin/order/list(page=0)}" aria-label="First">
                                     <span aria-hidden="true">First</span>
                                 </a>
                             </li>
-                            <li class="page-item" th:class="${memberList.first} ? 'disabled'">
+                            <li class="page-item" th:class="${orderDto.first} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="${memberList.first} ? '#' : @{/admin/memberList(page=${memberList.number-1})}"
+                                   th:href="${orderDto.first} ? '#' : @{/admin/order/list(page=${orderDto.number-1})}"
                                    aria-label="Previous">
                                     <span aria-hidden="true">Previous</span>
                                 </a>
                             </li>
                             <li class="page-item"
-                                th:each="page: ${last>=memberList.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
-                                th:class="${page== memberList.number} ? 'page-item active'">
-                                <a class="page-link" th:href="@{/admin/memberList(page=${page})}" th:text="${page+1}">
+                                th:each="page: ${last>=orderDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
+                                th:class="${page== orderDto.number} ? 'page-item active'">
+                                <a class="page-link" th:href="@{/admin/order/list(page=${page})}" th:text="${page+1}">
                                 </a>
                             </li>
-                            <li class="page-item" th:class="${memberList.last} ? 'disabled'">
+                            <li class="page-item" th:class="${orderDto.last} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="${memberList.last} ? '#' : @{/admin/memberList(page=${memberList.number+1})}"
+                                   th:href="${orderDto.last} ? '#' : @{/admin/order/list(page=${orderDto.number+1})}"
                                    aria-label="Next">
                                     <span aria-hidden="true">Next</span>
                                 </a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/memberList(page=${memberList.totalPages-1})}" aria-label="Last">
+                                <a class="page-link" th:href="@{/admin/order/list(page=${orderDto.totalPages-1})}"
+                                   aria-label="Last">
                                     <span aria-hidden="true">Last</span>
                                 </a>
                             </li>
@@ -175,9 +206,6 @@
                         </ul>
                     </nav>
                 </div>
-
-
-
 
 
                 <!-- End of Main Content -->
@@ -222,6 +250,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -242,6 +271,56 @@
         <script src="/js/demo/chart-area-demo.js"></script>
         <script src="/js/demo/chart-pie-demo.js"></script>
 
+
+
 </body>
+
+<script>
+
+    // 오더 상태 수정하면 자동 업데이트
+    $(function() {
+        $("#selectOrderStatus").on("change",function(){
+
+
+            let orderId = $(this).parent().siblings(".orderId").text();
+
+            console.log(orderId);
+
+            let orderStatus=$(this).children("option:selected").val();
+
+
+            // 세션 업데이트 해야하므로 해당 오더아이템id 와 변경된 숫자를 같이 post로 보내줍니다..
+            $.post("/admin/order/updateOrderStatus",
+                {orderId: orderId , orderStatus: orderStatus},
+                function (data,status){
+                    //$("#text").html(data + "<br>" + status);
+                }
+            )
+
+        });
+    });
+
+    // 배송 상태 수정하면 자동 업데이트
+    $(function() {
+        $("#selectDeliveryStatus").on("change",function(){
+
+
+            let orderId = $(this).parent().siblings(".orderId").text();
+            let deliveryStatus=$(this).children("option:selected").val();
+
+            console.log(orderId);
+
+            // 세션 업데이트 해야하므로 해당 오더아이템id 와 변경된 숫자를 같이 post로 보내줍니다..
+            $.post("/admin/order/updateDeliveryStatus",
+                {orderId: orderId , deliveryStatus: deliveryStatus},
+                function (data,status){
+                   // $("#text").html(data + "<br>" + status);
+                }
+            )
+
+        });
+    });
+
+</script>
 
 </html>

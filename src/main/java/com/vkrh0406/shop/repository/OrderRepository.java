@@ -1,6 +1,9 @@
 package com.vkrh0406.shop.repository;
 
 import com.vkrh0406.shop.domain.Order;
+import com.vkrh0406.shop.domain.OrderStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +27,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     public List<Order> findOrdersByMemberId(Long memberId);
 
     public List<Order> findOrdersByMemberIdOrderByIdDesc(Long memberId);
+
+    public Page<Order> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageable);
 
 }

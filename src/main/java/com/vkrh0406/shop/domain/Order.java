@@ -85,6 +85,10 @@ public class Order extends BaseEntity{
     //주문 취소
     public void cancel(){
 
+        if (orderStatus == OrderStatus.ORDER_COMPLETE) {
+            throw new IllegalStateException("주문 완료 상태입니다.");
+        }
+
         if (delivery.getStatus() == DeliveryStatus.DELIVERING) {
             throw new IllegalStateException("이미 배송출발한 상품은 취소가 불가능합니다.");
         }

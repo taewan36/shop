@@ -29,6 +29,10 @@ public class Delivery {
         this.address = address;
     }
 
+    public void setStatus(DeliveryStatus status) {
+        this.status = status;
+    }
+
     public Delivery(Address address, DeliveryStatus status) {
         this.address = address;
         this.status = status;
