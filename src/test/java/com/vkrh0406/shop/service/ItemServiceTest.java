@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Rollback
 class ItemServiceTest {
 
     @Autowired
@@ -53,6 +52,7 @@ class ItemServiceTest {
 
 
     @Test
+    @Rollback
     void getHomeItem() {
 
         //given
@@ -92,6 +92,7 @@ class ItemServiceTest {
     }
 
     @Test
+    @Rollback
     void testItemService() {
         //given
         Item item = new Item(1000, 900, 55, 5, null, categoryService.findCategoryByName("SUB1"));
