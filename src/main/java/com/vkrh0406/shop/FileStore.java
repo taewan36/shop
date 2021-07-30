@@ -17,7 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileStore {
 
-    private String fileDir = "D:/spring/files/";
+    private String fileDir = "/home/ubuntu/spring/files2/";
+    //private String fileDir = "D:/spring/files/";
 
     public String getFullPath(String fileName) {
         return fileDir + fileName;
