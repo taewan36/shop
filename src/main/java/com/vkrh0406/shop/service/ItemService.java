@@ -1,6 +1,6 @@
 package com.vkrh0406.shop.service;
 
-import com.vkrh0406.shop.Controller.ItemSearch;
+import com.vkrh0406.shop.Controller.search.ItemSearch;
 import com.vkrh0406.shop.domain.Item;
 import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.repository.ItemRepository;
@@ -9,13 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +25,21 @@ public class ItemService {
 
 
     public Page<ItemDto> searchCategoryItems(ItemSearch itemSearch, Pageable pageable,Long categoryId) {
+
+        //검색 조건이 있을때 체크
+        if (itemSearch.getSearchType() != null) {
+            itemSearch.checkSearchType();
+        }
+
         Page<ItemDto> itemDtos = itemRepository.searchItemWithCategory(itemSearch, pageable, categoryId);
         return itemDtos;
     }
 
     public Page<ItemDto> searchAllItem(ItemSearch itemSearch,Pageable pageable){
+        if (itemSearch.getSearchType() != null) {
+            itemSearch.checkSearchType();
+        }
+
         Page<ItemDto> itemDtos = itemRepository.searchItem(itemSearch, pageable);
         return itemDtos;
     }

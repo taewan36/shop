@@ -1,9 +1,9 @@
-package com.vkrh0406.shop.Controller;
+package com.vkrh0406.shop.Controller.search;
 
 import lombok.Data;
 
 @Data
-public class ItemSearch {
+public class OrderSearch {
     private String searchType;
     private String keyword;
     private String itemName;

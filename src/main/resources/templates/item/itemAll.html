@@ -17,15 +17,21 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Category</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <li th:each="subCategory1 : ${category.subCategories}">
-                    <a class="nav-link active" th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
-                    <div th:each="subCategory2 : ${subCategory1.subCategories}" th:if="${subCategory1.subCategories!=null}">
-                        <a class="dropdown-item" th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
+                    <a class="nav-link active"
+                       th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}"
+                       th:text="${subCategory1.categoryName}">Popular Items</a>
+                    <div th:each="subCategory2 : ${subCategory1.subCategories}"
+                         th:if="${subCategory1.subCategories!=null}">
+                        <a class="dropdown-item"
+                           th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}"
+                           th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
                     </div>
                     <hr class="dropdown-divider"/>
                 </li>
@@ -36,6 +42,27 @@
 </nav>
 <!-- Section-->
 <section class="py-5">
+
+    <div class="container row" style="float: none; margin: 0 auto; ">
+        <div class="col-md-5" style="float: none; margin: 0 auto;">
+            <form th:object="${itemSearch}" class="row gy-2 gx-2 align-items-center">
+                <div class="col-auto">
+                    <select th:field="*{searchType}" class="form-select">
+                        <option value="itemName">아이템 이름</option>
+                        <option value="categoryName">카테고리 이름</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <input type="text" th:field="*{keyword}" class="form-control" placeholder="키워드"/>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">검색</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+
 
     <div class="container">
         <nav aria-label="Page navigation example">
@@ -76,7 +103,6 @@
             </ul>
         </nav>
     </div>
-
 
 
     <div class="container px-4 px-lg-5 mt-5">

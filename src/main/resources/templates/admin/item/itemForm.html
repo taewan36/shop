@@ -94,120 +94,94 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
+                <!-- Section-->
+                <section class="py-5">
+                    <div class="container">
 
-
-                <!-- DataTales Example -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">주문 목록</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>오더 ID</th>
-                                    <th>멤버 ID</th>
-                                    <th>대표 상품 이름</th>
-                                    <th>오더 상태</th>
-                                    <th>배송 주소</th>
-                                    <th>배송 상태</th>
-                                    <th>삭제</th>
-
-                                </tr>
-                                </thead>
-
-                                <tbody>
-                                <tr th:each="order : ${orderDto}">
-                                    <td class="orderId" th:text="${order.orderId}">오더 ID</td>
-                                    <td th:text="${order.memberId}">멤버 Id</td>
-                                    <td th:text="${order.orderItems[0].item.name}">대표 상품 이름</td>
-                                    <td>
-                                        <select id="selectOrderStatus" name="orderStatus" class="form-control">
-                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.OrderStatus).values()}"
-                                                    th:value="${status}"
-                                                    th:text="${status}"
-                                                    th:selected="${order.orderStatus.name()==status.name()}"
-                                                    th:style="${order.orderStatus.name()==status.name()} ? 'color: #0a53be' : '' "
-                                            >
-                                            </option>
-                                        </select>
-
-                                    </td>
-                                    <td th:text="${order.delivery.address.addrPart1 + ' ' + order.delivery.address.addrPart2 + ' ' + order.delivery.address.addrDetail + ' ' +
-                                    order.delivery.address.zipcode}"></td>
-                                    <td>
-                                        <select id="selectDeliveryStatus" name="deliveryStatus" class="form-control">
-                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.DeliveryStatus).values()}"
-                                                    th:value="${status}"
-                                                    th:text="${status}"
-                                                    th:selected="${order.delivery.status.name()==status.name()}"
-                                                    th:style="${order.delivery.status.name()==status.name()} ? 'color: #0a53be' : '' "
-                                            >
-                                            </option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <button type="button"
-                                                th:onclick="|location.href='@{/admin/order/delete/{orderId}(orderId=${order.orderId})}'|"
-                                                class="order-buttons">
-                                            삭제
-                                        </button>
-
-
-                                    </td>
-
-                                </tr>
-
-
-                                </tbody>
-                            </table>
+                        <div class="py-5 text-center">
+                            <h2>아이템 등록폼</h2>
                         </div>
+                        <form enctype="multipart/form-data" th:object="${itemForm}" method="post">
+                            <div class="row justify-content-center" th:if="${#fields.hasGlobalErrors()}">
+                                <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+                                   th:text="${err}">전체 오류 메시지</p>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <label for="itemName">아이템 이름</label>
+                                    <input type="text" id="itemName" th:field="*{itemName}" class="form-control"
+                                           th:errorclass="field-error">
+                                    <div class="field-error" th:errors="*{itemName}"/>
+                                </div>
+
+                                <div class="col-lg-8">
+                                    <label for="category">아이템 카테고리</label>
+                                    <select th:field="*{categoryId}" id="category">
+                                        <option th:each="category : *{categories}" th:value="${category.id}" th:text="${category.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label for="price">원래 가격</label>
+                                    <input type="text" id="price" th:field="*{price}"
+                                           class="form-control"
+                                           th:errorclass="field-error">
+                                    <div class="field-error" th:errors="*{price}"/>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label for="discountPrice">할인된 가격 (할인없으면 0으로)</label>
+                                    <input type="text" id="discountPrice" th:field="*{discountPrice}"
+                                           class="form-control"
+                                           th:errorclass="field-error">
+                                    <div class="field-error" th:errors="*{discountPrice}"/>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label for="quantity">아이템 잔고</label>
+                                    <input type="text" id="quantity" th:field="*{quantity}"
+                                           class="form-control"
+                                           th:errorclass="field-error">
+                                    <div class="field-error" th:errors="*{quantity}"/>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label for="ratingStar">아이템 평점 (예) 1)</label>
+                                    <input type="text" id="ratingStar" th:field="*{ratingStar}"
+                                           class="form-control"
+                                           th:errorclass="field-error">
+                                    <div class="field-error" th:errors="*{ratingStar}"/>
+                                </div>
+                                <div class="col-lg-8">
+                                    <label th:for="content">아이템 이미지파일</label>
+                                    <input type="file"  style="margin: 0px; height: 50px; width: 100% ;" th:field="*{imageSource}" class="form-control"
+                                           placeholder="내용을 입력하세요"/>
+                                    <p th:if="${#fields.hasErrors('imageSource')}"
+                                       th:errors="*{imageSource}">Incorrect date</p>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <div class="row justify-content-center">
+                                <div class="col-4">
+                                    <button class="w-100 btn btn-primary btn-lg" type="submit">
+                                        등록
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button class="w-100 btn btn-secondary btn-lg"
+                                            onclick="location.href='items.html'" th:onclick="|location.href='@{/}'|"
+                                            type="button">취소
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </div>
 
-                <div class="container">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center"
-                            th:with="start=${T(Math).floor(orderDto.number/10)*10},
-                last=(${start + 9 < orderDto.totalPages ? start + 9 : orderDto.totalPages})">
-                            <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/order/list(page=0)}" aria-label="First">
-                                    <span aria-hidden="true">First</span>
-                                </a>
-                            </li>
-                            <li class="page-item" th:class="${orderDto.first} ? 'disabled'">
-                                <a class="page-link"
-                                   th:href="${orderDto.first} ? '#' : @{/admin/order/list(page=${orderDto.number-1})}"
-                                   aria-label="Previous">
-                                    <span aria-hidden="true">Previous</span>
-                                </a>
-                            </li>
-                            <li class="page-item"
-                                th:each="page: ${last>=orderDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
-                                th:class="${page== orderDto.number} ? 'page-item active'">
-                                <a class="page-link" th:href="@{/admin/order/list(page=${page})}" th:text="${page+1}">
-                                </a>
-                            </li>
-                            <li class="page-item" th:class="${orderDto.last} ? 'disabled'">
-                                <a class="page-link"
-                                   th:href="${orderDto.last} ? '#' : @{/admin/order/list(page=${orderDto.number+1})}"
-                                   aria-label="Next">
-                                    <span aria-hidden="true">Next</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/order/list(page=${orderDto.totalPages-1})}"
-                                   aria-label="Last">
-                                    <span aria-hidden="true">Last</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </nav>
-                </div>
+                </section>
 
 
+
+
+
+
+            </div>
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
@@ -250,10 +224,9 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
-
-
 
         <!-- Bootstrap core JavaScript-->
         <script src="/vendor/jquery/jquery.min.js"></script>

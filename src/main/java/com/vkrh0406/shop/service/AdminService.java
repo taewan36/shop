@@ -1,7 +1,13 @@
 package com.vkrh0406.shop.service;
 
+import com.vkrh0406.shop.Controller.search.ItemSearch;
+import com.vkrh0406.shop.FileStore;
 import com.vkrh0406.shop.domain.*;
+import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.dto.OrderDto;
+import com.vkrh0406.shop.form.ItemForm;
+import com.vkrh0406.shop.repository.CategoryRepository;
+import com.vkrh0406.shop.repository.ItemRepository;
 import com.vkrh0406.shop.repository.MemberRepository;
 import com.vkrh0406.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,9 @@ public class AdminService {
 
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
+    private final CategoryRepository categoryRepository;
+    private final FileStore fileStore;
 
     public Page<Member> getMemberList(Member member, Pageable pageable) {
         //어드민체크
@@ -52,13 +60,6 @@ public class AdminService {
 
     }
 
-    private void adminCheck(Member member) {
-        //어드민이 아닐경우
-        if (!member.isAdmin()) {
-            throw new IllegalStateException("어드민이 아닙니다");
-        }
-    }
-
     // Page<OrderDto> 를 리턴함
     public Page<OrderDto> getOrderDtoList(Member member,Pageable pageable) {
         //어드민 체크
@@ -80,7 +81,6 @@ public class AdminService {
         return orders.map(OrderDto::of);
 
     }
-
 
     @Transactional
     public void updateOrderStatus(Member member, Long orderId, OrderStatus orderStatus) {
@@ -110,7 +110,63 @@ public class AdminService {
 
         orderRepository.deleteById(orderId);
 
+    }
+
+    /**
+     *
+     * @param member
+     * @param pageable
+     * @return Page<ItemDto>
+     */
+    public Page<ItemDto> getItemList(Member member, ItemSearch itemSearch, Pageable pageable) {
+        adminCheck(member);
+
+        Page<ItemDto> itemDtos = itemRepository.searchItem(itemSearch, pageable);
+
+        return itemDtos;
+    }
 
 
+    @Transactional
+    public void newItem(Member member, ItemForm itemForm) {
+        //어드민 체크
+        adminCheck(member);
+
+        //이미지 소스 파일로 저장
+        UploadFile uploadFile = fileStore.storeFile(itemForm.getImageSource());
+
+        //해당 카테고리 db에서 찾아오기
+        Category findCategory = categoryRepository.findById(itemForm.getCategoryId()).orElseThrow(() -> new IllegalStateException("이런 카테고리Id는 없습니다"));
+
+        //아이템 생성
+        Item item = new Item(itemForm.getPrice(), itemForm.getDiscountPrice(), itemForm.getQuantity(), itemForm.getRatingStar(), uploadFile, findCategory);
+
+        //아이템 저장
+        itemRepository.save(item);
+
+    }
+
+    /**
+     * 어드민 체크
+     * @param member
+     */
+    private void adminCheck(Member member) {
+        //어드민이 아닐경우
+        if (!member.isAdmin()) {
+            throw new IllegalStateException("어드민이 아닙니다");
+        }
+    }
+
+    //카테고리 리스트 리턴
+    public List<Category> getCategories() {
+        List<Category> all = categoryRepository.findAll();
+        return all;
+    }
+
+    //아이템 삭제
+    public void deleteItem(Member member, Long itemId) {
+        adminCheck(member);
+
+        itemRepository.deleteById(itemId);
     }
 }

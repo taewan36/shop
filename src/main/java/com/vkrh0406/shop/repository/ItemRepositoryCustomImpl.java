@@ -4,7 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.vkrh0406.shop.Controller.ItemSearch;
+import com.vkrh0406.shop.Controller.search.ItemSearch;
 import com.vkrh0406.shop.domain.Item;
 import com.vkrh0406.shop.dto.CategoryDto;
 import com.vkrh0406.shop.dto.ItemDto;
@@ -78,17 +78,17 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         findCategoryChildren(CategoryService.category, categoryIds, categoryId);
 
         List<ItemDto> content = queryFactory
-                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.uploadFile.storeFileName))
+                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.category.id,item.category.name,item.uploadFile.storeFileName,item.quantity))
                 .from(item)
                 .orderBy(item.id.desc())
-                .where(categoryCondition(categoryIds),searchCondition(itemSearch.getItemName()))
+                .where(categoryCondition(categoryIds),searchCondition(itemSearch.getItemName(), itemSearch.getCategoryName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Item> countQuery = queryFactory
                 .selectFrom(item)
-                .where(categoryCondition(categoryIds),searchCondition(itemSearch.getItemName()))
+                .where(categoryCondition(categoryIds),searchCondition(itemSearch.getItemName(),itemSearch.getCategoryName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -117,17 +117,17 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     public Page<ItemDto> searchItem(ItemSearch itemSearch, Pageable pageable) {
 
         List<ItemDto> content = queryFactory
-                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.uploadFile.storeFileName))
+                .select(new QItemDto(item.id,item.name,item.price,item.discountPrice,item.ratingStar,item.category.id,item.category.name,item.uploadFile.storeFileName,item.quantity))
                 .from(item)
                 .orderBy(item.id.desc())
-                .where(searchCondition(itemSearch.getItemName()))
+                .where(searchCondition(itemSearch.getItemName(),itemSearch.getCategoryName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Item> countQuery = queryFactory
                 .selectFrom(item)
-                .where(searchCondition(itemSearch.getItemName()))
+                .where(searchCondition(itemSearch.getItemName(),itemSearch.getCategoryName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -135,12 +135,15 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
 
     }
 
-    private BooleanBuilder searchCondition(String name) {
+    private BooleanBuilder searchCondition(String itemName,String categoryName) {
 
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if (hasText(name)) {
-            booleanBuilder.or(item.name.contains(name));
+        if (hasText(itemName)) {
+            booleanBuilder.or(item.name.contains(itemName));
+        }
+        if (hasText(categoryName)) {
+            booleanBuilder.or(item.category.name.contains(categoryName));
         }
 
 

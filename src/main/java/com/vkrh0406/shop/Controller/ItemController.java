@@ -1,10 +1,10 @@
 package com.vkrh0406.shop.Controller;
 
 
+import com.vkrh0406.shop.Controller.search.ItemSearch;
 import com.vkrh0406.shop.domain.Cart;
 import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.dto.ItemDto;
-import com.vkrh0406.shop.interceptor.SessionConst;
 import com.vkrh0406.shop.resolver.Login;
 import com.vkrh0406.shop.resolver.SessionCart;
 import com.vkrh0406.shop.service.CategoryService;
@@ -17,9 +17,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,11 +55,13 @@ public class ItemController {
     //모든 아이템 검색
     @GetMapping("all")
     public String itemAll(Model model, @SessionCart Cart cart, @Login Member member, HttpServletRequest request,
-                          @PageableDefault(size = 8) Pageable pageable, ItemSearch itemSearch) {
+                          @PageableDefault(size = 8) Pageable pageable, @ModelAttribute ItemSearch itemSearch) {
 
         if (member != null) {
             model.addAttribute("username", member.getUsername());
         }
+
+
 
         Page<ItemDto> itemDtos = itemService.searchAllItem(itemSearch, pageable);
 

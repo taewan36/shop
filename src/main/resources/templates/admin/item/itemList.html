@@ -99,57 +99,45 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">주문 목록</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">상품 목록</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>오더 ID</th>
-                                    <th>멤버 ID</th>
-                                    <th>대표 상품 이름</th>
-                                    <th>오더 상태</th>
-                                    <th>배송 주소</th>
-                                    <th>배송 상태</th>
-                                    <th>삭제</th>
+                                    <th>아이템 ID</th>
+                                    <th>아이템 카테고리 ID</th>
+                                    <th>아이템 카테고리 이름</th>
+                                    <th>아이템 이미지</th>
+                                    <th>아이템 이름</th>
+                                    <th>아이템 원래 가격</th>
+                                    <th>아이템 할인된 가격</th>
+                                    <th>아이템 잔고</th>
+                                    <th>아이템 평점</th>
+                                    <th>삭제버튼</th>
 
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                <tr th:each="order : ${orderDto}">
-                                    <td class="orderId" th:text="${order.orderId}">오더 ID</td>
-                                    <td th:text="${order.memberId}">멤버 Id</td>
-                                    <td th:text="${order.orderItems[0].item.name}">대표 상품 이름</td>
+                                <tr th:each="item : ${itemDto}">
+                                    <td class="orderId" th:text="${item.id}">아이템 ID</td>
+                                    <td th:text="${item.categoryId}">아이템 카테고리</td>
+                                    <td th:text="${item.categoryName}">아이템 카테고리</td>
                                     <td>
-                                        <select id="selectOrderStatus" name="orderStatus" class="form-control">
-                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.OrderStatus).values()}"
-                                                    th:value="${status}"
-                                                    th:text="${status}"
-                                                    th:selected="${order.orderStatus.name()==status.name()}"
-                                                    th:style="${order.orderStatus.name()==status.name()} ? 'color: #0a53be' : '' "
-                                            >
-                                            </option>
-                                        </select>
+                                        <img  width="100px" height="100px" th:src="|/images/${item.imageSource}|"/>
+                                    </td>
+                                    <td th:text="${item.name}">아이템 이름</td>
+                                    <td th:text="${item.price}">아이템 원래 가격</td>
+                                    <td th:text="${item.discountPrice}">아이템 할인된 가격</td>
+                                    <td th:text="${item.quantity}">아이템 잔고</td>
+                                    <td th:text="${item.ratingStar}">아이템 평점</td>
 
-                                    </td>
-                                    <td th:text="${order.delivery.address.addrPart1 + ' ' + order.delivery.address.addrPart2 + ' ' + order.delivery.address.addrDetail + ' ' +
-                                    order.delivery.address.zipcode}"></td>
-                                    <td>
-                                        <select id="selectDeliveryStatus" name="deliveryStatus" class="form-control">
-                                            <option th:each="status : ${T(com.vkrh0406.shop.domain.DeliveryStatus).values()}"
-                                                    th:value="${status}"
-                                                    th:text="${status}"
-                                                    th:selected="${order.delivery.status.name()==status.name()}"
-                                                    th:style="${order.delivery.status.name()==status.name()} ? 'color: #0a53be' : '' "
-                                            >
-                                            </option>
-                                        </select>
-                                    </td>
+
                                     <td>
                                         <button type="button"
-                                                th:onclick="|location.href='@{/admin/order/delete/{orderId}(orderId=${order.orderId})}'|"
+                                                th:onclick="|location.href='@{/admin/item/delete/{itemId}(itemId=${item.id})}'|"
                                                 class="order-buttons">
                                             삭제
                                         </button>
@@ -169,35 +157,35 @@
                 <div class="container">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center"
-                            th:with="start=${T(Math).floor(orderDto.number/10)*10},
-                last=(${start + 9 < orderDto.totalPages ? start + 9 : orderDto.totalPages})">
+                            th:with="start=${T(Math).floor(itemDto.number/10)*10},
+                last=(${start + 9 < itemDto.totalPages ? start + 9 : itemDto.totalPages})">
                             <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/order/list(page=0)}" aria-label="First">
+                                <a class="page-link" th:href="@{/admin/item/list(page=0)}" aria-label="First">
                                     <span aria-hidden="true">First</span>
                                 </a>
                             </li>
-                            <li class="page-item" th:class="${orderDto.first} ? 'disabled'">
+                            <li class="page-item" th:class="${itemDto.first} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="${orderDto.first} ? '#' : @{/admin/order/list(page=${orderDto.number-1})}"
+                                   th:href="${itemDto.first} ? '#' : @{/admin/item/list(page=${itemDto.number-1})}"
                                    aria-label="Previous">
                                     <span aria-hidden="true">Previous</span>
                                 </a>
                             </li>
                             <li class="page-item"
-                                th:each="page: ${last>=orderDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
-                                th:class="${page== orderDto.number} ? 'page-item active'">
-                                <a class="page-link" th:href="@{/admin/order/list(page=${page})}" th:text="${page+1}">
+                                th:each="page: ${last>=itemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
+                                th:class="${page== itemDto.number} ? 'page-item active'">
+                                <a class="page-link" th:href="@{/admin/item/list(page=${page})}" th:text="${page+1}">
                                 </a>
                             </li>
-                            <li class="page-item" th:class="${orderDto.last} ? 'disabled'">
+                            <li class="page-item" th:class="${itemDto.last} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="${orderDto.last} ? '#' : @{/admin/order/list(page=${orderDto.number+1})}"
+                                   th:href="${itemDto.last} ? '#' : @{/admin/item/list(page=${itemDto.number+1})}"
                                    aria-label="Next">
                                     <span aria-hidden="true">Next</span>
                                 </a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/order/list(page=${orderDto.totalPages-1})}"
+                                <a class="page-link" th:href="@{/admin/item/list(page=${itemDto.totalPages-1})}"
                                    aria-label="Last">
                                     <span aria-hidden="true">Last</span>
                                 </a>
@@ -250,10 +238,9 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
-
-
 
         <!-- Bootstrap core JavaScript-->
         <script src="/vendor/jquery/jquery.min.js"></script>

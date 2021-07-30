@@ -1,14 +1,15 @@
 package com.vkrh0406.shop.Controller;
 
+import com.vkrh0406.shop.Controller.search.ItemSearch;
+import com.vkrh0406.shop.domain.Category;
 import com.vkrh0406.shop.domain.DeliveryStatus;
 import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.domain.OrderStatus;
+import com.vkrh0406.shop.dto.ItemDto;
 import com.vkrh0406.shop.dto.OrderDto;
+import com.vkrh0406.shop.form.ItemForm;
 import com.vkrh0406.shop.resolver.Login;
 import com.vkrh0406.shop.service.AdminService;
-import com.vkrh0406.shop.service.MemberService;
-import com.vkrh0406.shop.service.OrderService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -100,7 +102,6 @@ public class AdminController {
     public Map<String, Object> updateOrderStatus(@Login Member member, @RequestParam Long orderId, @RequestParam OrderStatus orderStatus) {
 
 
-
         adminService.updateOrderStatus(member, orderId, orderStatus);
 
         Map<String, Object> successMessage = new HashMap<>();
@@ -116,7 +117,6 @@ public class AdminController {
     public Map<String, Object> updateDeliveryStatus(@Login Member member, @RequestParam Long orderId, @RequestParam DeliveryStatus deliveryStatus) {
 
 
-
         adminService.updateDeliveryStatus(member, orderId, deliveryStatus);
 
         Map<String, Object> successMessage = new HashMap<>();
@@ -126,11 +126,60 @@ public class AdminController {
         return successMessage;
     }
 
+    //오더 삭제
     @GetMapping("order/delete/{orderId}")
     public String deleteOrder(@PathVariable Long orderId, @Login Member member) {
 
         adminService.deleteOrder(member, orderId);
 
         return "redirect:/admin/order/list";
+    }
+
+
+    //아이템 리스트
+    @GetMapping("item/list")
+    public String getItemList(@Login Member member, Model model, @PageableDefault(size = 10) Pageable pageable, @ModelAttribute ItemSearch itemSearch) {
+        //유저네임
+        model.addAttribute("username", member.getUsername());
+
+        Page<ItemDto> itemDto = adminService.getItemList(member, itemSearch, pageable);
+
+        model.addAttribute("itemDto", itemDto);
+
+
+        return "admin/item/itemList";
+
+    }
+
+    @GetMapping("item/new")
+    public String newItemForm(@Login Member member, Model model) {
+        //유저네임
+        model.addAttribute("username", member.getUsername());
+
+        ItemForm itemForm = new ItemForm();
+
+        List<Category> categories = adminService.getCategories();
+        itemForm.setCategories(categories);
+
+
+        model.addAttribute("itemForm", itemForm);
+
+        return "admin/item/itemForm";
+    }
+
+    @PostMapping("item/new")
+    public String newItem(@Login Member member, @ModelAttribute ItemForm itemForm) {
+        adminService.newItem(member, itemForm);
+
+
+        return "redirect:/admin/item/list";
+    }
+
+    @GetMapping("item/delete/{itemId}")
+    public String deleteItem(@PathVariable Long itemId, @Login Member member) {
+
+        adminService.deleteItem(member, itemId);
+
+        return "redirect:/admin/item/list";
     }
 }

@@ -1,13 +1,10 @@
 package com.vkrh0406.shop.repository;
 
-import com.vkrh0406.shop.Controller.ItemSearch;
 import com.vkrh0406.shop.domain.Item;
-import com.vkrh0406.shop.dto.ItemDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item,Long>, ItemRepositoryCustom{

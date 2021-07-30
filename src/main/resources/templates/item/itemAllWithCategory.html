@@ -18,15 +18,21 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Category</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <li th:each="subCategory1 : ${category.subCategories}">
-                    <a class="nav-link active" th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}" th:text="${subCategory1.categoryName}">Popular Items</a>
-                    <div th:each="subCategory2 : ${subCategory1.subCategories}" th:if="${subCategory1.subCategories!=null}">
-                        <a class="dropdown-item" th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}" th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
+                    <a class="nav-link active"
+                       th:href="@{/item/category/{category_id} (category_id=${subCategory1.categoryId})}"
+                       th:text="${subCategory1.categoryName}">Popular Items</a>
+                    <div th:each="subCategory2 : ${subCategory1.subCategories}"
+                         th:if="${subCategory1.subCategories!=null}">
+                        <a class="dropdown-item"
+                           th:href="@{/item/category/{category_id} (category_id=${subCategory2.categoryId})}"
+                           th:text="|ㄴ${subCategory2.categoryName}|">Popular Items</a>
                     </div>
                     <hr class="dropdown-divider"/>
                 </li>
@@ -37,13 +43,35 @@
 </nav>
 <!-- Section-->
 <section class="py-5">
+    <div class="container row" style="float: none; margin: 0 auto; ">
+        <div class="col-md-5" style="float: none; margin: 0 auto;">
+            <form th:object="${itemSearch}" class="row gy-2 gx-3 align-items-center">
+                <div class="col-sm-3">
+                    <select th:field="*{searchType}" class="form-select">
+                        <option value="itemName">아이템 이름</option>
+                        <option value="categoryName">카테고리 이름</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <input type="text" th:field="*{keyword}" class="form-control" placeholder="키워드"/>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">검색</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+
+
     <div class="container">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center"
                 th:with="start=${T(Math).floor(homeItemDto.number/10)*10},
                 last=(${start + 9 < homeItemDto.totalPages ? start + 9 : homeItemDto.totalPages})">
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}" aria-label="First">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}"
+                       aria-label="First">
                         <span aria-hidden="true">First</span>
                     </a>
                 </li>
@@ -57,7 +85,9 @@
                 <li class="page-item"
                     th:each="page: ${last>=homeItemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
                     th:class="${page== homeItemDto.number} ? 'page-item active'">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}" th:text="${page+1}">
+                    <a class="page-link"
+                       th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}"
+                       th:text="${page+1}">
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.last} ? 'disabled'">
@@ -68,7 +98,9 @@
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}" aria-label="Last">
+                    <a class="page-link"
+                       th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}"
+                       aria-label="Last">
                         <span aria-hidden="true">Last</span>
                     </a>
                 </li>
@@ -120,7 +152,8 @@
                 th:with="start=${T(Math).floor(homeItemDto.number/10)*10},
                 last=(${start + 9 < homeItemDto.totalPages ? start + 9 : homeItemDto.totalPages})">
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}" aria-label="First">
+                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=0)}"
+                       aria-label="First">
                         <span aria-hidden="true">First</span>
                     </a>
                 </li>
@@ -134,7 +167,9 @@
                 <li class="page-item"
                     th:each="page: ${last>=homeItemDto.totalPages}  ? ${#numbers.sequence(start,last-1)} : ${#numbers.sequence(start,last)}"
                     th:class="${page== homeItemDto.number} ? 'page-item active'">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}" th:text="${page+1}">
+                    <a class="page-link"
+                       th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${page})}"
+                       th:text="${page+1}">
                     </a>
                 </li>
                 <li class="page-item" th:class="${homeItemDto.last} ? 'disabled'">
@@ -145,7 +180,9 @@
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}" aria-label="Last">
+                    <a class="page-link"
+                       th:href="@{/item/category/{categoryId} (categoryId=${categoryId},page=${homeItemDto.totalPages-1})}"
+                       aria-label="Last">
                         <span aria-hidden="true">Last</span>
                     </a>
                 </li>

@@ -38,20 +38,6 @@ public class CategoryService {
 
 
 
-//    public Map<Long, String> makeCategoriesList(){
-//        CategoryDto category = CategoryService.category;
-//        List<String> categoryString = new ArrayList<>();
-//
-//        List<CategoryDto> subCategories = category.getSubCategories();
-//
-//
-//        return null;
-//
-//
-//    }
-
-
-
     public Category findCategoryByName(String name){
         Category category = categoryRepository.findCategoryByName(name).orElseThrow(() -> new IllegalStateException("이런 이름의 카테고리가 없습니다"));
         return category;
