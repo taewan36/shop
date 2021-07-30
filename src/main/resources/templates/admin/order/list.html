@@ -134,8 +134,8 @@
                                         </select>
 
                                     </td>
-                                    <td th:text="${order.delivery.address.addrPart1 + ' ' + order.delivery.address.addrPart2 + ' ' + order.delivery.address.addrDetail + ' ' +
-                                    order.delivery.address.zipcode}"></td>
+                                    <td th:text="${order.delivery.address?.addrPart1 + ' ' + order.delivery.address?.addrPart2 + ' ' + order.delivery.address?.addrDetail + ' ' +
+                                    order.delivery.address?.zipcode}"></td>
                                     <td>
                                         <select id="selectDeliveryStatus" name="deliveryStatus" class="form-control">
                                             <option th:each="status : ${T(com.vkrh0406.shop.domain.DeliveryStatus).values()}"
