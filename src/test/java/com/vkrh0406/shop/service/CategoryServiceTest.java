@@ -54,7 +54,7 @@ class CategoryServiceTest {
 
     }
 
-    private List<Category> createCategoryEntities() {
+//    private List<Category> createCategoryEntities() {
 //        Category sub1 = new Category("SUB1"   ,1L, 0L);
 //        Category sub2 = new Category("SUB2"   ,2L, 0L);
 //        Category sub11 = new Category("SUB1-1",3L, 1L);
@@ -79,6 +79,6 @@ class CategoryServiceTest {
 //        List<Category> categoryEntities = List.of(sub1, sub2, sub11, sub12, sub21, sub22);
 //
 //        return categoryEntities;
-
-    }
+//
+//    }
 }
