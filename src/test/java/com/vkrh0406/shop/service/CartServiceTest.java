@@ -62,6 +62,7 @@ class CartServiceTest {
 //    }
 
     @Test
+    @Transactional
     void makeCartDto(){
         //given
         List<Item> all = itemService.findAll();
@@ -69,18 +70,23 @@ class CartServiceTest {
 
         Cart cart = new Cart();
         Long cartId = cartService.saveCart(cart);
+        Cart cart1 = cartService.findById(cartId);
+        cart1.getOrderItems().stream()
+                .forEach(orderItem -> {
+                    orderItem.getItem();
+                });
 
 
         //when
-        cartService.saveOrderItemToCart(cart, item.getId());
+        cartService.saveOrderItemToCart(cart1, item.getId());
 
-        CartDto cartDto = cartService.makeCartDto(cart,null);
+        CartDto cartDto = cartService.makeCartDto(cart1);
 
         List<OrderItemDto> orderItems = cartDto.getOrderItems();
 
-//        for (OrderItemDto orderItem : orderItems) {
-//            log.info("오더아이템 {}", orderItem.getItemName());
-//        }
+        for (OrderItemDto orderItem : orderItems) {
+            log.info("오더아이템 {}", orderItem.getItemName());
+        }
 
         //then
         assertThat(orderItems.size()).isEqualTo(1);
