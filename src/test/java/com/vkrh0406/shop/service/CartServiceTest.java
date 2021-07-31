@@ -74,7 +74,7 @@ class CartServiceTest {
         //when
         cartService.saveOrderItemToCart(cart, item.getId());
 
-        CartDto cartDto = cartService.makeCartDto(cart,new Member());
+        CartDto cartDto = cartService.makeCartDto(cart,null);
 
         List<OrderItemDto> orderItems = cartDto.getOrderItems();
 
