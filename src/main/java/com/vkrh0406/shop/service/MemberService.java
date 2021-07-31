@@ -82,14 +82,15 @@ public class MemberService {
             }
             //멤버에 소속된 카트가 있는데 세션에 카트가 없는경우
             else if (findMember.getCart() != null && cart == null) {
-                findMember.getCart().getOrderItems()
+                Cart cart1 = findMember.getCart();
+                cart1.getOrderItems()
                         .stream()
                         .forEach(o->{
                                     o.getItem();
                                 }
                         );
 
-                httpSession.setAttribute(SessionConst.SESSION_CART, findMember.getCart());
+                httpSession.setAttribute(SessionConst.SESSION_CART,cart1);
             }
             //멤버 카트 !=null 세션카트 !=null 일경우 세션카트에서 멤버카트로 추가
             else if (findMember.getCart() != null && cart != null) {

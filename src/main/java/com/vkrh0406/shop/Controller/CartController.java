@@ -94,7 +94,7 @@ public class CartController {
         }
 
         //카트Dto 만들기
-        CartDto cartDto = cartService.makeCartDto(cart,member);
+        CartDto cartDto = cartService.makeCartDto(cart);
 
 
         model.addAttribute("cartDto", cartDto);

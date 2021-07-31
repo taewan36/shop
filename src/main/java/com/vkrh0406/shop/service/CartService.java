@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class CartService {
     private final CartRepository cartRepository;
     private final ItemService itemService;
+    private final MemberRepository memberRepository;
 
     public Cart findById(Long id) {
         Optional<Cart> cartById = cartRepository.findCartById(id);
@@ -40,14 +41,11 @@ public class CartService {
     }
 
     /// 세션에 있는 카트를 CartDto로 바꿈
-    public CartDto makeCartDto(Cart cart,Member member) {
+    public CartDto makeCartDto(Cart cart) {
         if (cart == null) {
             return null;
         }
-        if (member != null) {
-            Cart cart1 = member.getCart();
-            cart = cart1;
-        }
+
 
         //카트가 db에 있는 카트면
         if (cart.getId() != null) {
