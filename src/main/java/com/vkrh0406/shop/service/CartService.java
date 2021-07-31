@@ -40,10 +40,15 @@ public class CartService {
     }
 
     /// 세션에 있는 카트를 CartDto로 바꿈
-    public CartDto makeCartDto(Cart cart) {
+    public CartDto makeCartDto(Cart cart,Member member) {
         if (cart == null) {
             return null;
         }
+        if (member != null) {
+            Cart cart1 = member.getCart();
+            cart = cart1;
+        }
+
         //카트가 db에 있는 카트면
         if (cart.getId() != null) {
             //Lazy 로딩이므로 데이터를 여기서 불러옴

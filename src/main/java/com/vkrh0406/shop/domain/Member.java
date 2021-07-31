@@ -39,7 +39,7 @@ public class Member {
 
     }
 
-    protected Member() {
+    public Member() {
     }
 
     public void setCart(Cart cart) {

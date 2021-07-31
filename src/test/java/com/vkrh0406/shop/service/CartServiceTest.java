@@ -1,9 +1,6 @@
 package com.vkrh0406.shop.service;
 
-import com.vkrh0406.shop.domain.Cart;
-import com.vkrh0406.shop.domain.Category;
-import com.vkrh0406.shop.domain.Item;
-import com.vkrh0406.shop.domain.UploadFile;
+import com.vkrh0406.shop.domain.*;
 import com.vkrh0406.shop.dto.CartDto;
 import com.vkrh0406.shop.dto.OrderItemDto;
 import com.vkrh0406.shop.repository.CategoryRepository;
@@ -77,7 +74,7 @@ class CartServiceTest {
         //when
         cartService.saveOrderItemToCart(cart, item.getId());
 
-        CartDto cartDto = cartService.makeCartDto(cart);
+        CartDto cartDto = cartService.makeCartDto(cart,new Member());
 
         List<OrderItemDto> orderItems = cartDto.getOrderItems();
 

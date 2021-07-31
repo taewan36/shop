@@ -77,8 +77,13 @@ public class MemberController {
             return "redirect:/";
         }
 
+        //테스트용 어드민 계정 아디 비번을 자동으로 입력해줌
+        LoginForm loginForm = new LoginForm();
+        loginForm.setLoginId("test");
+        loginForm.setPassword("test!");
+
         model.addAttribute("category", CategoryService.category);
-        model.addAttribute("loginForm", new LoginForm());
+        model.addAttribute("loginForm", loginForm);
         model.addAttribute("cartSize", (cart == null) ? 0 : cart.getSize());
 
         return "member/loginForm";
