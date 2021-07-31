@@ -89,7 +89,9 @@
                                         ></option>
                                     </select>
                             </span>
-
+                            <span>
+                            <a th:href="@{/cart/deleteItem/{itemId} (itemId=${orderItem.itemId})}" class="delete-option"></a>
+                            </span>
 
                         </div>
                     </td>

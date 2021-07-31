@@ -6,6 +6,7 @@ import com.vkrh0406.shop.domain.Member;
 import com.vkrh0406.shop.domain.OrderItem;
 import com.vkrh0406.shop.dto.CartDto;
 import com.vkrh0406.shop.dto.OrderItemDto;
+import com.vkrh0406.shop.interceptor.SessionConst;
 import com.vkrh0406.shop.repository.CartRepository;
 import com.vkrh0406.shop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,11 +52,14 @@ public class CartService {
         //카트가 db에 있는 카트면
         if (cart.getId() != null) {
             //Lazy 로딩이므로 데이터를 여기서 불러옴
-            cart.getOrderItems()
+
+            Cart dbCart = cartRepository.findCartById(cart.getId()).orElseThrow(() -> new IllegalStateException("이런 카트id는 없습니다"));
+            dbCart.getOrderItems()
                     .stream()
                     .forEach(o -> {
                         o.getItem().getUploadFile().getStoreFileName();
                     });
+            cart = dbCart;
         }
 
        // log.info("카트 프록시 {}", cart.getOrderItems().get(0).getItem().getName());
@@ -156,5 +161,40 @@ public class CartService {
     }
 
 
+    /**
+     * deleteCartItem
+     *
+     * @param member  멤버 조회를 위한 멤버
+     * @param session 세션 카트 세팅을 위한 세션
+     * @param itemId  삭제할 아이템Id
+     */
+    @Transactional
+    public Cart deleteCartItem(Member member, HttpSession session, Long itemId) {
+        Member findMember = memberRepository.findMemberById(member.getId()).orElseThrow(() -> new IllegalStateException("이런 멤버id는 없습니다"));
 
+        Cart cart1 = findMember.getCart();
+        List<OrderItem> orderItems = cart1.getOrderItems();
+        orderItems.removeIf(orderItem -> orderItem.getItem().getId().equals(itemId));
+        cart1.setSize(orderItems.size());
+
+
+        //Lazy 로딩
+        cart1.getOrderItems().stream()
+                .forEach(orderItem -> {
+                    orderItem.getItem();
+                });
+
+
+
+        log.info("남아있는 카트 아이템 개수= {}", cart1.getOrderItems().size());
+
+        //기존 세션 삭제
+        session.removeAttribute(SessionConst.SESSION_CART);
+
+        //새 세션 넣기
+        session.setAttribute(SessionConst.SESSION_CART, cart1);
+
+        return cart1;
+
+    }
 }

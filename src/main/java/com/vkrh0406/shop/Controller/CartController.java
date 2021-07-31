@@ -15,6 +15,7 @@ import com.vkrh0406.shop.service.CartService;
 import com.vkrh0406.shop.service.CategoryService;
 import com.vkrh0406.shop.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -122,5 +123,24 @@ public class CartController {
 
         return "ok";
 
+    }
+
+    @GetMapping("deleteItem/{itemId}")
+    public String deleteCartItem(@PathVariable Long itemId, @SessionCart Cart cart,@Login Member member,HttpSession session) {
+
+        //로그인된 상태
+        if (member != null && member.getId() != null) {
+            Cart cart1 = cartService.deleteCartItem(member, session, itemId);
+
+        }
+        //로그인된 상태가 아니면 세션에서만 삭제
+        else{
+            List<OrderItem> orderItems = cart.getOrderItems();
+            orderItems.removeIf(orderItem -> orderItem.getItem().getId().equals(itemId));
+            cart.setSize(orderItems.size());
+        }
+
+
+        return "redirect:/cart/list";
     }
 }
