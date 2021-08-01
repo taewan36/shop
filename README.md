@@ -5,6 +5,13 @@
  
  DB는 MariaDB를 사용합니다.
  
+ 어드민 계정 테스트는
+ 
+ id:  test
+ 비번: test!
+ 
+ 으로 로그인해주시면 됩니다.
+ 
  ![이미지](https://user-images.githubusercontent.com/28558856/127768932-2e65d838-3973-4380-8466-469b015af37b.png)
  
  
