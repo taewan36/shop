@@ -13,3 +13,4 @@
 - QueryDsl
 - ThymeLeaf
 - Jquery
+- MariaDB
