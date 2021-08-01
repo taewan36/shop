@@ -5,6 +5,9 @@
  
  DB는 MariaDB를 사용합니다.
  
+ ![이미지](https://user-images.githubusercontent.com/28558856/127768932-2e65d838-3973-4380-8466-469b015af37b.png)
+ 
+ 
  
  기술 스택
 
